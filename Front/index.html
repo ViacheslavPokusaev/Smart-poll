@@ -15,7 +15,21 @@
 				чтобы увидеть динамически связанное значение title!
 			</span>
 		</div>
+		<div id="app-3">
+			<span v-if="seen">Сейчас меня видно</span>
+		</div>
+		<div id="app-4">
+			<ol>
+				<li v-for="todo in todos">
+					{{ todo.text }}
+				</li>
+			</ol>
+		</div>
+		<div id="app-5">
+			<p>{{ message }}</p>
+			<button v-on:click="reverseMessage">Перевернуть сообщение</button>
+		</div>
   </body>
-	<script src="vue.js"></script>
+	<script src="../../vue.js"></script>
 	<script src="usual.js"></script>
 </html>
