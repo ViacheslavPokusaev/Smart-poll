@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using ServerCore.Models.Inrerfaces;
+using Microsoft.AspNetCore.HttpsPolicy;
 using ServerCore.Models.RealizationInrerface;
 
 namespace ServerCore
@@ -27,7 +28,10 @@ namespace ServerCore
                                   builder =>
                                   {
                                       builder
-                                        .WithOrigins("http://localhost:8080");
+                                        .WithOrigins("http://localhost:8080")
+                                        .AllowAnyHeader()
+                                        .AllowAnyMethod()
+                                        .AllowCredentials();
                                   });
             });
 
