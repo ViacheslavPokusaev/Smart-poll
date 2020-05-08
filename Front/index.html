@@ -3,11 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+		<title>Document</title>
+		<script src="vue.js"></script>
   </head>
   <body>
     <div id="app">
-      {{ message }}
+			{{ message }}
+			<br>
+			<span>Это сообщение никогда не изменится: {{ msg }}</span>
 		</div>
 		<div id="app-2">
 			<span v-bind:title="message">
@@ -28,8 +31,59 @@
 		<div id="app-5">
 			<p>{{ message }}</p>
 			<button v-on:click="reverseMessage">Перевернуть сообщение</button>
+			<button>{{ revMessage }}</button>
 		</div>
-  </body>
-	<script src="../../vue.js"></script>
+		<div id="app-6">
+			<p>{{ message }}</p>
+			<input v-model="message">
+		</div>
+		<div id="app-7">
+			<ol>
+				<!--
+		      Теперь мы можем передать каждому компоненту todo-item объект
+		      с информацией о задаче, который будет динамически меняться.
+		      Мы также определяем для каждого компонента "key",
+		      значение которого мы разберём далее в руководстве.
+		    -->
+				<todo-item v-for="item in groceryList" v-bind:todo="item" v-bind:key="item.id"></todo-item>
+				<my-item v-for="item in groceryList" v-bind:item="item" v-bind:key="item.id"></my-item>
+			</ol>
+		</div>
+		<div id="app-8">
+		<p>Двойные фигурные скобки: {{ rawHtml }}</p>
+		<p>Директива v-html: <span v-html="rawHtml"></span></p>
+		<a v-bind:[someAttr]='value'> ... </a>
+		<div v-if="Math.random() > 0.5">
+			Сейчас меня видно
+		</div>
+		<div v-else>
+			А теперь — нет
+		</div>
+
+		<div v-if="type === 'A'">
+			A
+		</div>
+		<div v-else-if="type === 'B'">
+			B
+		</div>
+		<div v-else-if="type === 'C'">
+			C
+		</div>
+		<div v-else>
+			Не A/B/C
+		</div>
+		<h1 v-show="ok">Привет!</h1>
+		</div>
+		<div id="example-3" class="demo">
+			<input type="checkbox" id="jack" value="Джек" v-model="checkedNames">
+			<label for="jack">Джек</label>
+			<input type="checkbox" id="john" value="Джон" v-model="checkedNames">
+			<label for="john">Джон</label>
+			<input type="checkbox" id="mike" value="Майк" v-model="checkedNames">
+			<label for="mike">Майк</label>
+			<br>
+			<span>Отмеченные имена: {{ checkedNames }}</span>
+		</div>
+	</body>
 	<script src="usual.js"></script>
 </html>
