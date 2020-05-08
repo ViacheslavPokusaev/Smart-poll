@@ -22,29 +22,39 @@ namespace ServerCore.Controllers
             yield return UserAnswerFunctional.GetUsersAnswers();
         }
 
-        // GET <controller>/5
-        [HttpGet("{id}")]
-        public string Get(int id)
+        // GET <controller>/useranswer/5
+        [HttpGet("useranswer/{id}")]
+        public UserAnswer Get(int IDAnswer)
         {
-            return "value";
+            return UserAnswerFunctional.Get(IDAnswer);
+        }
+
+        // GET <controller>/count/5
+        [HttpGet("count/{id}")]
+        public int GetCountUsersAnswers(int OptionID)
+        {
+            return UserAnswerFunctional.GetCountUsersAnswers(OptionID);
         }
 
         // POST <controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post(UserAnswer userAnswer)
         {
+            if (userAnswer == null) { BadRequest(); return; }
+
+            UserAnswerFunctional.Create(userAnswer);
         }
 
         // PUT <controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
 
         // DELETE <controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }

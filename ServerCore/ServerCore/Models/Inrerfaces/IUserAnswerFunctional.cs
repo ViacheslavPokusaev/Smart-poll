@@ -7,6 +7,7 @@ namespace ServerCore.Models.Inrerfaces
     {
         void Create(UserAnswer userAnswer);
         UserAnswer Get(int IDAnswer);
+        int GetCountUsersAnswers(int OptionID);
         List<UserAnswer> GetUsersAnswers();
     }
 }

@@ -6,7 +6,7 @@ namespace ServerCore.Models.Inrerfaces
     public interface IOptionsFunctional
     {
         void Create(Option option);
-        Option Get(int IdOption);
         List<Option> GetOptions();
+        List<Option> GetOptionsByOneVoting(int VotingID);
     }
 }

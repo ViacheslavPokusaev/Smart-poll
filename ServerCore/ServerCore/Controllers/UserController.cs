@@ -24,27 +24,32 @@ namespace ServerCore.Controllers
 
         // GET <controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public User Get(int UserID)
         {
-            return "value";
+            return UserFunctional.Get(UserID);
         }
 
         // POST <controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post(User user)
         {
+            if (user == null) BadRequest();
+
+            UserFunctional.Create(user);
         }
 
         // PUT <controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+
+        //}
 
         // DELETE <controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+
+        //}
     }
 }

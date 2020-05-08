@@ -30,11 +30,18 @@ namespace ServerCore.Models.RealizationInrerface
                 return db.Query<UserAnswer>("SELECT * FROM UserAnswer WHERE IDAnswer = @IDAnswer", new { IDAnswer }).FirstOrDefault();
             }
         }
+        public int GetCountUsersAnswers(int OptionID)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                return db.Query<int>("SELECT * FROM UsersAnswers WHERE OptionID = @OptionID", new { OptionID }).ToList().Count;
+            }
+        }
         public void Create(UserAnswer userAnswer)
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                var sqlQuery = "INSERT INTO Voting (Name, Age) VALUES(@Name, @Age)";
+                var sqlQuery = "INSERT INTO UsersAnswers (OptionID, UserID) VALUES(@OptionID, @UserID)";
                 db.Execute(sqlQuery, userAnswer);
 
                 // если мы хотим получить id добавленного пользователя

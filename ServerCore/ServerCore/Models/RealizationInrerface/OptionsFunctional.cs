@@ -23,6 +23,13 @@ namespace ServerCore.Models.RealizationInrerface
                 return db.Query<Option>("SELECT * FROM Options").ToList();
             }
         }
+        public List<Option> GetOptionsByOneVoting(int VotingID)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                return db.Query<Option>("SELECT * FROM Options WHERE VotingID = @VotingID", new { VotingID }).ToList();
+            }
+        }
         public Option Get(int IdOption)
         {
             using (IDbConnection db = new SqlConnection(connectionString))

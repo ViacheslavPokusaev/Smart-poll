@@ -25,11 +25,11 @@ namespace ServerCore.Models.RealizationInrerface
             }
         }
 
-        public User Get(int IdUser)
+        public User Get(int UserID)
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                return db.Query<User>("SELECT * FROM Users WHERE UserID = @UserID", new { IdUser }).FirstOrDefault();
+                return db.Query<User>("SELECT * FROM Users WHERE UserID = @UserID", new { UserID }).FirstOrDefault();
             }
         }
 
@@ -37,7 +37,7 @@ namespace ServerCore.Models.RealizationInrerface
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                var sqlQuery = "INSERT INTO Users (Name, Age) VALUES(@Name, @Age)";
+                var sqlQuery = "INSERT INTO Users (Email, UserPassword, UserName, Age) VALUES(@Email, @UserPassword, @UserName, @Age)";
                 db.Execute(sqlQuery, user);
 
                 // если мы хотим получить id добавленного пользователя

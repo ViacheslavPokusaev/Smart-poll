@@ -24,27 +24,30 @@ namespace ServerCore.Controllers
 
         // GET <controller>/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public IEnumerable<List<Option>> GetOptionsByOneVoting(int VotingID)
         {
-            return "value";
+            yield return optionsFunctional.GetOptionsByOneVoting(VotingID);
         }
 
         // POST <controller>
         [HttpPost]
-        public void Post([FromBody]string value)
+        public void Post(Option option)
         {
+            if (option == null) { BadRequest(); return; }
+
+            optionsFunctional.Create(option);
         }
 
         // PUT <controller>/5
-        [HttpPut("{id}")]
-        public void Put(int id, [FromBody]string value)
-        {
-        }
+        //[HttpPut("{id}")]
+        //public void Put(int id, [FromBody]string value)
+        //{
+        //}
 
         // DELETE <controller>/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
-        {
-        }
+        //[HttpDelete("{id}")]
+        //public void Delete(int id)
+        //{
+        //}
     }
 }
