@@ -17,7 +17,9 @@
     <hr />
     <div id="votings">
       <button @click="GetAllVotings">GetAllVotings</button>
-      <div class="myclass" v-for="item in AllVotings" :key="item.index">{{item["votingID"]}}</div>
+      <div class="myclass" v-for="item in AllVotings" :key="item.index">{{item["questionInVoting"]}}</div>
+      <hr />
+      <button v-on:click="AddObject">ADD</button>
     </div>
 
     <!--<Test/>-->
@@ -37,18 +39,23 @@ export default {
       users: null,
       name: "dsdsdsd",
       AllVotings: {},
-			url:{
-				users: "http://localhost:5001/user",
-				votings: "http://localhost:5001/voting",
-				options: "http://localhost:5001/options",
-				usersAnswers: "http://localhost:5001/usersanswers"
-			}
+      AllOptions: {},
+      url: {
+        users: "http://localhost:5001/user",
+        votings: "http://localhost:5001/voting",
+        options: "http://localhost:5001/options",
+        usersAnswers: "http://localhost:5001/usersanswers"
+      }
     };
   },
-  mounted: function() {
+  mounted() {
     axios.get("http://localhost:5001/voting").then(response => {
       this.AllVotings = response.data[0];
-      console.log(this.AllVotings);
+      //console.log(this.AllVotings);
+		});
+		axios.get("http://localhost:5001/options").then(response => {
+      this.AllOptions = response.data[0];
+      console.log(this.AllOptions);
     });
   },
   methods: {
@@ -86,13 +93,22 @@ export default {
       axios.get(this.url.votings).then(response => {
         this.AllVotings = response.data[0];
         console.log(this.AllVotings);
-			});
-			// console.log(this.AllVotings);
-			// this.AllVotings[0].votingID = 1000;
+      });
+      // console.log(this.AllVotings);
+      // this.AllVotings[0].votingID = 1000;
       //let url = "http://localhost:5001/voting";
       //fetch(url).then(response => response.json()).then(json => this.AllVotings = json[0]);
       // this.AllVotings = response.json();
       //console.log(this.AllVotings);
+    },
+    AddObject: function() {
+      let index = 0;
+      let smt = { name: "test", age: 18 };
+      for (let Voting in this.AllVotings) {
+        this.AllVotings[index].smt = smt;
+        console.log(this.AllVotings[index]);
+        index++;
+      }
     }
   },
   components: {

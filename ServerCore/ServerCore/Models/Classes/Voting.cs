@@ -11,8 +11,8 @@ namespace ServerCore.Models.Classes
         public int UserID { get; set; }
         public bool AddNewOptins { get; set; }
         public int MaxOptions { get; set; }
-        public int MaxOptionsByOneUser { get; set; }
-        public int QuestionsInVoting { get; set; }
+        public int MaxVotesByOneUser { get; set; }
+        public string QuestionInVoting { get; set; }
         public DateTime DeadLine { get; set; }
         public bool PublicOrPrivate { get; set; }
     }
