@@ -1,11 +1,5 @@
 <template>
   <div id="app">
-    <!--<GetData v-bind:info="items"/>-->
-    <input type="text" id="myid" />
-    <button v-on:click="greet">OK</button>
-    <button v-on:click="GetData">GET</button>
-    <br />
-    <br />
     <div id="form">
       <input type="text" id="Email" placeholder="Enter your email" />
       <input type="text" id="UserPassword" placeholder="Enter your password" />
@@ -14,30 +8,27 @@
       <button v-on:click="sendData">PUSH</button>
     </div>
     <hr />
-    <hr />
     <div id="votings">
-      <button @click="GetAllVotings">GetAllVotings</button>
-      <div class="myclass" v-for="item in AllVotings" :key="item.index">{{item["questionInVoting"]}}</div>
+      <div class="myclass" v-for="Voting in AllVotings" :key="Voting.index">
+        {{Voting["questionInVoting"]}}
+        <ul v-for="option in Voting.options" :key="option.index">
+          <li>{{option}}</li>
+        </ul>
+      </div>
       <hr />
-      <button v-on:click="AddObject">ADD</button>
     </div>
-
-    <!--<Test/>-->
     <router-view />
   </div>
 </template>
 
 <script>
 import axios from "axios";
-//import GetData from '@/components/GetData';
 
 export default {
   name: "app",
   data() {
     return {
       addUser: {},
-      users: null,
-      name: "dsdsdsd",
       AllVotings: {},
       AllOptions: {},
       url: {
@@ -49,29 +40,24 @@ export default {
     };
   },
   mounted() {
-    axios.get("http://localhost:5001/voting").then(response => {
+    axios.get(this.url.votings).then(response => {
       this.AllVotings = response.data[0];
-      //console.log(this.AllVotings);
-		});
-		axios.get("http://localhost:5001/options").then(response => {
-      this.AllOptions = response.data[0];
-      console.log(this.AllOptions);
     });
+    axios
+      .get(this.url.options)
+      .then(response => {
+        this.AllOptions = response.data[0];
+        console.log(this.AllOptions);
+      })
+      .then(() => this.AddObject());
   },
   methods: {
-    greet: async function() {
-      let idVoting = document.getElementById("myid").value;
-      let response = await fetch(this.url.users + `/${idVoting}`);
-      if (response.ok) this.users = await response.json();
-    },
     sendData: function() {
-      //let NewUser = {};
       let form = document.getElementById("form");
       for (let elem of form.children) {
         this.addUser[elem.id] = elem.value;
       }
       this.addUser["Age"] = Number(this.addUser["Age"]);
-      console.log(this.addUser);
 
       let response = fetch(this.url.users, {
         method: "POST", // или 'PUT'
@@ -80,40 +66,30 @@ export default {
         },
         body: JSON.stringify(this.addUser) // данные могут быть 'строкой' или {объектом}!
       });
-      console.log(this.addUser);
-      console.log(JSON.stringify(this.addUser));
-      const json = response;
-      console.log("Успех:", json.server);
-    },
-    GetData: function() {
-      console.log(this.users[0]);
-      //for (let key in this.users) console.log(this.users[key]);
-    },
-    GetAllVotings: function() {
-      axios.get(this.url.votings).then(response => {
-        this.AllVotings = response.data[0];
-        console.log(this.AllVotings);
-      });
-      // console.log(this.AllVotings);
-      // this.AllVotings[0].votingID = 1000;
-      //let url = "http://localhost:5001/voting";
-      //fetch(url).then(response => response.json()).then(json => this.AllVotings = json[0]);
-      // this.AllVotings = response.json();
-      //console.log(this.AllVotings);
     },
     AddObject: function() {
-      let index = 0;
-      let smt = { name: "test", age: 18 };
-      for (let Voting in this.AllVotings) {
-        this.AllVotings[index].smt = smt;
-        console.log(this.AllVotings[index]);
-        index++;
-      }
+      let indexOption = 0;
+      let indexVoting = 0;
+      let Votings = this.AllVotings;
+      let Options = this.AllOptions;
+
+      // Votings[indexVoting].smt = smt; // получаем каждый объект и даём ему новое свойство
+      //console.log(Option["votingID"]); // получаем каждый айди
+      //console.log(Option); // получаем каждый Object
+
+      for (let Voting in Votings) {
+        for (let Option of Options) {
+          if (Votings[indexVoting].votingID === Option["votingID"]) {
+            Votings[indexVoting].options = Option;
+            //delete Options[indexOption];
+          }
+          //indexOption++;
+        }
+        indexVoting++;
+			}
     }
   },
-  components: {
-    //GetData
-  }
+  components: {}
 };
 </script>
 
