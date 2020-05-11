@@ -11,8 +11,15 @@
       <input type="text" id="UserPassword" placeholder="Enter your password" />
       <input type="text" id="UserName" placeholder="Enter your name" />
       <input type="text" id="Age" placeholder="Enter your age" />
+      <button v-on:click="sendData">PUSH</button>
     </div>
-    <button v-on:click="sendData">PUSH</button>
+    <hr />
+    <hr />
+    <div id="votings">
+      <button @click="GetAllVotings">GetAllVotings</button>
+      <div class="myclass" v-for="item in AllVotings" :key="item.index">{{item["votingID"]}}</div>
+    </div>
+
     <!--<Test/>-->
     <router-view />
   </div>
@@ -26,18 +33,28 @@ export default {
   name: "app",
   data() {
     return {
-      url: "http://localhost:5001/user",
       addUser: {},
       users: null,
-      name: "dsdsdsd"
+      name: "dsdsdsd",
+      AllVotings: {},
+			url:{
+				users: "http://localhost:5001/user",
+				votings: "http://localhost:5001/voting",
+				options: "http://localhost:5001/options",
+				usersAnswers: "http://localhost:5001/usersanswers"
+			}
     };
+  },
+  mounted: function() {
+    axios.get("http://localhost:5001/voting").then(response => {
+      this.AllVotings = response.data[0];
+      console.log(this.AllVotings);
+    });
   },
   methods: {
     greet: async function() {
       let idVoting = document.getElementById("myid").value;
-      let url = "http://localhost:5001/voting/user" + `/${idVoting}`;
-      console.log(url);
-      let response = await fetch(url);
+      let response = await fetch(this.url.users + `/${idVoting}`);
       if (response.ok) this.users = await response.json();
     },
     sendData: function() {
@@ -49,21 +66,33 @@ export default {
       this.addUser["Age"] = Number(this.addUser["Age"]);
       console.log(this.addUser);
 
-      let response = fetch(this.url, {
-				method: "POST", // или 'PUT'
-				headers: {
-					"Content-Type": "application/json"
+      let response = fetch(this.url.users, {
+        method: "POST", // или 'PUT'
+        headers: {
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(this.addUser), // данные могут быть 'строкой' или {объектом}!    
+        body: JSON.stringify(this.addUser) // данные могут быть 'строкой' или {объектом}!
       });
       console.log(this.addUser);
-			console.log(JSON.stringify(this.addUser));
+      console.log(JSON.stringify(this.addUser));
       const json = response;
       console.log("Успех:", json.server);
     },
     GetData: function() {
       console.log(this.users[0]);
       //for (let key in this.users) console.log(this.users[key]);
+    },
+    GetAllVotings: function() {
+      axios.get(this.url.votings).then(response => {
+        this.AllVotings = response.data[0];
+        console.log(this.AllVotings);
+			});
+			// console.log(this.AllVotings);
+			// this.AllVotings[0].votingID = 1000;
+      //let url = "http://localhost:5001/voting";
+      //fetch(url).then(response => response.json()).then(json => this.AllVotings = json[0]);
+      // this.AllVotings = response.json();
+      //console.log(this.AllVotings);
     }
   },
   components: {
@@ -85,5 +114,11 @@ div {
   flex: 200px;
   margin: 5px 5px 5px 5px;
   background-color: red;
+}
+
+.myclass {
+  border: 4px double black; /* Параметры границы */
+  background: #fc3; /* Цвет фона */
+  padding: 10px;
 }
 </style>
