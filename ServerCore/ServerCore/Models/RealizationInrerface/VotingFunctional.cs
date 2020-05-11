@@ -20,7 +20,15 @@ namespace ServerCore.Models.RealizationInrerface
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                return db.Query<Voting>("SELECT * FROM Voting").ToList();
+                List<Voting> VotingsWithOptions = new List<Voting>();
+                var AllVotings = db.Query<Voting>("SELECT * FROM Voting").ToArray();
+                //var AllOptions = db.Query<Voting>("SELECT * FROM Voting").ToList();
+                for (int i = 0; i < AllVotings.Length; i++)
+                {
+                    AllVotings[i].Options = db.Query<Option>("SELECT * FROM Options WHERE VotingID = @VotingID", new { AllVotings[i].VotingID }).ToArray();
+                    VotingsWithOptions.Add(AllVotings[i]);
+                }
+                return VotingsWithOptions;
             }
         }
         public List<Voting> GetUserVotings(int UserID)

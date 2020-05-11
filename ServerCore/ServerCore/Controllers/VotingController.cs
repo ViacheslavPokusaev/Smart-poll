@@ -18,6 +18,7 @@ namespace ServerCore.Controllers
         [HttpGet]
         public IEnumerable<List<Voting>> Get()
         {
+
             yield return votingFunctional.GetAllVotings();
         }
 

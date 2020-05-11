@@ -10,14 +10,13 @@
     <hr />
     <div id="votings">
       <div class="myclass" v-for="(Voting) in AllVotings" :key="Voting.index">
-        {{Voting["questionInVoting"]}}
-        <ul v-for="(option) in Voting.options" :key="option.index">
-          <li>{{option}}</li>
-        </ul>
+        {{Voting.questionInVoting}}
+        <div v-for="(properties) in Voting.options" :key="properties.index">
+          <div v-for="(option) in properties.nameOption" :key="option.index">{{option}}</div>
+        </div>
       </div>
     </div>
     <hr />
-    <button v-on:click="TestCreate">TEST</button>
     <router-view />
   </div>
 </template>
@@ -31,22 +30,17 @@ export default {
     return {
       addUser: {},
       AllVotings: {},
-      AllOptions: {},
       url: {
         users: "http://localhost:5001/user",
         votings: "http://localhost:5001/voting",
-        options: "http://localhost:5001/options",
         usersAnswers: "http://localhost:5001/usersanswers"
       }
     };
   },
   mounted() {
-    axios.get(this.url.options).then(response => {
-			this.AllOptions = response.data[0];
-		}).then(axios.get(this.url.votings)
-      .then(response => {				
-				this.AllVotings = response.data[0];
-      }).then(this.AddOptionsInVotings()));  
+    axios.get(this.url.votings).then(response => {
+      this.AllVotings = response.data[0];
+    });
   },
   methods: {
     sendData: function() {
@@ -63,46 +57,6 @@ export default {
         },
         body: JSON.stringify(this.addUser) // данные могут быть 'строкой' или {объектом}!
       });
-    },
-    TestCreate: function() {
-      let indexOption = 0;
-      let Votings = this.AllVotings;
-      let OptionsInVoting = {};
-
-      for (let Voting of Votings) {
-        let votingID = Voting.votingID;
-        OptionsInVoting[votingID] = Voting.votingID;
-      }
-
-      console.log(OptionsInVoting);
-      // for (let indexOption = 0; i < Votings.length; indexOption++) {
-      //   for (let Option of Options) {
-      //     OptionsInVoting.indexOption = 1;
-      //   }
-      // }
-    },
-    AddOptionsInVotings: function() {
-      let indexOption = 0;
-      let indexVoting = 0;
-      let Votings = this.AllVotings;
-      let Options = this.AllOptions;
-
-      let OptionsInVoting = {};
-
-      // Votings[indexVoting].smt = smt; // получаем каждый объект и даём ему новое свойство
-      //console.log(Option["votingID"]); // получаем каждый айди
-      //console.log(Option); // получаем каждый Object
-
-      for (let Voting in Votings) {
-        for (let Option of Options) {
-          if (Votings[indexVoting].votingID === Option["votingID"]) {
-            Votings[indexVoting].options = Option;
-            //delete Options[indexOption];
-          }
-          //indexOption++;
-        }
-        indexVoting++;
-      }
     }
   },
   components: {}
