@@ -9,14 +9,15 @@
     </div>
     <hr />
     <div id="votings">
-      <div class="myclass" v-for="Voting in AllVotings" :key="Voting.index">
+      <div class="myclass" v-for="(Voting) in AllVotings" :key="Voting.index">
         {{Voting["questionInVoting"]}}
-        <ul v-for="option in Voting.options" :key="option.index">
+        <ul v-for="(option) in Voting.options" :key="option.index">
           <li>{{option}}</li>
         </ul>
       </div>
-      <hr />
     </div>
+    <hr />
+    <button v-on:click="TestCreate">TEST</button>
     <router-view />
   </div>
 </template>
@@ -40,16 +41,12 @@ export default {
     };
   },
   mounted() {
-    axios.get(this.url.votings).then(response => {
-      this.AllVotings = response.data[0];
-    });
-    axios
-      .get(this.url.options)
-      .then(response => {
-        this.AllOptions = response.data[0];
-        console.log(this.AllOptions);
-      })
-      .then(() => this.AddObject());
+    axios.get(this.url.options).then(response => {
+			this.AllOptions = response.data[0];
+		}).then(axios.get(this.url.votings)
+      .then(response => {				
+				this.AllVotings = response.data[0];
+      }).then(this.AddOptionsInVotings()));  
   },
   methods: {
     sendData: function() {
@@ -67,11 +64,30 @@ export default {
         body: JSON.stringify(this.addUser) // данные могут быть 'строкой' или {объектом}!
       });
     },
-    AddObject: function() {
+    TestCreate: function() {
+      let indexOption = 0;
+      let Votings = this.AllVotings;
+      let OptionsInVoting = {};
+
+      for (let Voting of Votings) {
+        let votingID = Voting.votingID;
+        OptionsInVoting[votingID] = Voting.votingID;
+      }
+
+      console.log(OptionsInVoting);
+      // for (let indexOption = 0; i < Votings.length; indexOption++) {
+      //   for (let Option of Options) {
+      //     OptionsInVoting.indexOption = 1;
+      //   }
+      // }
+    },
+    AddOptionsInVotings: function() {
       let indexOption = 0;
       let indexVoting = 0;
       let Votings = this.AllVotings;
       let Options = this.AllOptions;
+
+      let OptionsInVoting = {};
 
       // Votings[indexVoting].smt = smt; // получаем каждый объект и даём ему новое свойство
       //console.log(Option["votingID"]); // получаем каждый айди
@@ -86,7 +102,7 @@ export default {
           //indexOption++;
         }
         indexVoting++;
-			}
+      }
     }
   },
   components: {}
