@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <ListVotings />
     <div id="form">
       <input type="text" id="Email" placeholder="Enter your email" />
       <input type="text" id="UserPassword" placeholder="Enter your password" />
@@ -8,7 +9,7 @@
       <button v-on:click="sendData">PUSH</button>
     </div>
     <hr />
-    <div id="votings">
+    <!-- <div id="votings">
       <div class="myclass" v-for="(Voting) in AllVotings" :key="Voting.index">
         {{Voting.questionInVoting}}
         <div v-for="(properties) in Voting.options" :key="properties.index">
@@ -22,7 +23,7 @@
         <button v-bind:id="Voting.votingID + `id`">Добавить свой вариант</button>
         <button v-bind:id="Voting.votingID">Проголосовать</button>
       </div>
-    </div>
+    </div>-->
     <hr />
     <router-view />
   </div>
@@ -30,28 +31,29 @@
 
 <script>
 import axios from "axios";
+import ListVotings from "@/components/Voting.vue";
 
 export default {
   name: "app",
   data() {
     return {
-      addNewOptions: null,
-      AllUserAnswers: 0,
-      selectedOptins: [],
-      addUser: {},
-      AllVotings: {},
-      url: {
-        users: "http://localhost:5001/user",
-        votings: "http://localhost:5001/voting",
-        usersAnswers: "http://localhost:5001/usersanswers"
-      }
+      addNewOptions: null
+      // AllUserAnswers: 0,
+      // selectedOptins: [],
+      // addUser: {},
+      // AllVotings: {},
+      // url: {
+      //   users: "http://localhost:5001/user",
+      //   votings: "http://localhost:5001/voting",
+      //   usersAnswers: "http://localhost:5001/usersanswers"
+      // }
     };
   },
-  created() {
-    axios.get(this.url.votings).then(response => {
-      this.AllVotings = response.data[0];
-    });
-  },
+  // created() {
+  //   axios.get(this.url.votings).then(response => {
+  //     this.AllVotings = response.data[0];
+  //   });
+  // },
   methods: {
     checkVoting: function(event) {
       //alert(event.target.id); // ай ди
@@ -72,8 +74,8 @@ export default {
       this.AllUserAnswers++;
       console.log(this.AllUserAnswers);
       if (this.AllUserAnswers > maxVotesByOneUser) {
-				alert("ErroR!!");
-				event.target.checked = false;
+        alert("ErroR!!");
+        event.target.checked = false;
       }
     },
     sendData: function() {
@@ -92,12 +94,14 @@ export default {
       });
     }
   },
-  components: {}
+  components: {
+    ListVotings
+  }
 };
 </script>
 
 <style>
-@import "components/reboot.css";
+@import "assets/reboot.css";
 /*#app {
   display: flex;
 		flex-wrap: wrap;
