@@ -12,8 +12,15 @@
       <div class="myclass" v-for="(Voting) in AllVotings" :key="Voting.index">
         {{Voting.questionInVoting}}
         <div v-for="(properties) in Voting.options" :key="properties.index">
-          <div v-for="(option) in properties.nameOption" :key="option.index">{{option}}</div>
+          <input
+            type="checkbox"
+            v-bind:id="properties.optionID + `;` + Voting.maxVotesByOneUser"
+            v-on:change="checkVoting"
+          />
+          <label>{{properties.nameOption}}</label>
         </div>
+        <button v-bind:id="Voting.votingID + `id`">Добавить свой вариант</button>
+        <button v-bind:id="Voting.votingID">Проголосовать</button>
       </div>
     </div>
     <hr />
@@ -28,6 +35,9 @@ export default {
   name: "app",
   data() {
     return {
+      addNewOptions: null,
+      AllUserAnswers: 0,
+      selectedOptins: [],
       addUser: {},
       AllVotings: {},
       url: {
@@ -37,12 +47,35 @@ export default {
       }
     };
   },
-  mounted() {
+  created() {
     axios.get(this.url.votings).then(response => {
       this.AllVotings = response.data[0];
     });
   },
   methods: {
+    checkVoting: function(event) {
+      //alert(event.target.id); // ай ди
+      //alert( event.target.id.indexOf(';') );
+
+      let maxVotesByOneUser = event.target.id.substring(
+        event.target.id.indexOf(";") + 1
+      );
+      let OptionID = event.target.id.substring(0, event.target.id.indexOf(";"));
+      console.log(
+        "maxVotesByOneUser - " +
+          maxVotesByOneUser +
+          " " +
+          "OptionID - " +
+          OptionID
+      );
+
+      this.AllUserAnswers++;
+      console.log(this.AllUserAnswers);
+      if (this.AllUserAnswers > maxVotesByOneUser) {
+				alert("ErroR!!");
+				event.target.checked = false;
+      }
+    },
     sendData: function() {
       let form = document.getElementById("form");
       for (let elem of form.children) {
@@ -63,24 +96,31 @@ export default {
 };
 </script>
 
-<style scoped>
+<style>
 @import "components/reboot.css";
-#app {
-  /*display: flex;
+/*#app {
+  display: flex;
 		flex-wrap: wrap;
 		justify-content: space-around;
-		*/
+		
   background-color: aqua;
-}
+
+}*/
 div {
   flex: 200px;
   margin: 5px 5px 5px 5px;
-  background-color: red;
+  /*background-color: white;*/
 }
 
 .myclass {
   border: 4px double black; /* Параметры границы */
   background: #fc3; /* Цвет фона */
   padding: 10px;
+}
+
+button {
+  background: aqua;
+  border: 1px solid black;
+  border-radius: 5px;
 }
 </style>
