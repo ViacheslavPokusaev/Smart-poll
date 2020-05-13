@@ -1,24 +1,14 @@
 <template>
   <div id="listvotings">
     <div class="myclass" v-for="(Voting) in AllVotings" :key="Voting.index">
-      {{Voting.questionInVoting}}
-      <div v-for="(properties) in Voting.options" :key="properties.index">
-        <input
-          type="checkbox"
-          v-bind:id="properties.optionID + `;` + Voting.maxVotesByOneUser"
-          v-on:change="checkVoting"
-        />
-        <label>{{properties.nameOption}}</label>
-      </div>
-      <button v-bind:id="Voting.votingID + `id`">Добавить свой вариант</button>
-      <button v-bind:id="Voting.votingID">Проголосовать</button>
+      <OneVoting v-bind:CurrentVoting="Voting"/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import Voting from "@/components/Voting";
+import OneVoting from "@/components/Voting.vue";
 
 export default {
   name: "listvotings",
@@ -42,7 +32,7 @@ export default {
     });
   },
   components: {
-    Voting
+    OneVoting
   }
 };
 </script>

@@ -9,29 +9,13 @@
       <button v-on:click="sendData">PUSH</button>
     </div>
     <hr />
-    <!-- <div id="votings">
-      <div class="myclass" v-for="(Voting) in AllVotings" :key="Voting.index">
-        {{Voting.questionInVoting}}
-        <div v-for="(properties) in Voting.options" :key="properties.index">
-          <input
-            type="checkbox"
-            v-bind:id="properties.optionID + `;` + Voting.maxVotesByOneUser"
-            v-on:change="checkVoting"
-          />
-          <label>{{properties.nameOption}}</label>
-        </div>
-        <button v-bind:id="Voting.votingID + `id`">Добавить свой вариант</button>
-        <button v-bind:id="Voting.votingID">Проголосовать</button>
-      </div>
-    </div>-->
-    <hr />
     <router-view />
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import ListVotings from "@/components/Voting.vue";
+import ListVotings from "@/components/ListVotings.vue";
 
 export default {
   name: "app",
@@ -55,29 +39,6 @@ export default {
   //   });
   // },
   methods: {
-    checkVoting: function(event) {
-      //alert(event.target.id); // ай ди
-      //alert( event.target.id.indexOf(';') );
-
-      let maxVotesByOneUser = event.target.id.substring(
-        event.target.id.indexOf(";") + 1
-      );
-      let OptionID = event.target.id.substring(0, event.target.id.indexOf(";"));
-      console.log(
-        "maxVotesByOneUser - " +
-          maxVotesByOneUser +
-          " " +
-          "OptionID - " +
-          OptionID
-      );
-
-      this.AllUserAnswers++;
-      console.log(this.AllUserAnswers);
-      if (this.AllUserAnswers > maxVotesByOneUser) {
-        alert("ErroR!!");
-        event.target.checked = false;
-      }
-    },
     sendData: function() {
       let form = document.getElementById("form");
       for (let elem of form.children) {
