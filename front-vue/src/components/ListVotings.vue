@@ -1,7 +1,7 @@
 <template>
   <div id="listvotings">
     <div class="myclass" v-for="(Voting) in AllVotings" :key="Voting.index">
-      <OneVoting v-bind:CurrentVoting="Voting"/>
+      <OneVoting v-bind:CurrentVoting="Voting" />
     </div>
   </div>
 </template>
@@ -14,19 +14,13 @@ export default {
   name: "listvotings",
   data() {
     return {
-      addNewOptions: null,
-      AllUserAnswers: 0,
-      selectedOptins: [],
-      addUser: {},
       AllVotings: {},
       url: {
-        users: "http://localhost:5001/user",
-        votings: "http://localhost:5001/voting",
-        usersAnswers: "http://localhost:5001/usersanswers"
+        votings: "http://localhost:5001/voting"
       }
     };
   },
-  created() {
+  mounted() {
     axios.get(this.url.votings).then(response => {
       this.AllVotings = response.data[0];
     });
@@ -38,4 +32,22 @@ export default {
 </script>
 
 <style scoped>
+#listvotings {
+  display: flex;
+  flex-wrap: wrap;
+	/* justify-content: center; */
+
+  padding: 5px 5px 5px 5px;
+}
+
+.myclass {
+  border: 4px double black; /* Параметры границы */
+  background: #fc3; /* Цвет фона */
+  padding: 10px;
+  
+	flex-basis: 250px;
+
+  height: 250px;
+  max-width: 250px;
+}
 </style>

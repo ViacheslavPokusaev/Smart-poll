@@ -1,15 +1,11 @@
 <template>
   <div id="voting">
-    {{CurrentVoting.questionInVoting}}
+    <strong>{{CurrentVoting.questionInVoting}}</strong>
     <div v-for="(properties) in CurrentVoting.options" :key="properties.index">
-      <input
-        type="checkbox"
-        v-bind:id="properties.optionID + `;` + CurrentVoting.maxVotesByOneUser"
-        v-on:change="checkVoting"
-      />
+      <input type="checkbox" v-bind:id="properties.optionID" v-on:change="checkVoting" />
       <label>{{properties.nameOption}}</label>
     </div>
-    <button v-bind:id="CurrentVoting.votingID + `id`">Добавить свой вариант</button>
+    <button v-if="CurrentVoting.addNewOptions" v-bind:id="CurrentVoting.votingID + `id`">+ вариант</button>
     <button v-bind:id="CurrentVoting.votingID">Проголосовать</button>
   </div>
 </template>
@@ -22,40 +18,36 @@ export default {
   name: "listvotings",
   data() {
     return {
-      addNewOptions: null,
       AllUserAnswers: 0,
-      selectedOptins: [],
-      addUser: {},
-      AllVotings: {},
-      url: {
-        users: "http://localhost:5001/user",
-        votings: "http://localhost:5001/voting",
-        usersAnswers: "http://localhost:5001/usersanswers"
-      }
+      ChosenOptions: []
     };
   },
   methods: {
     checkVoting: function(event) {
-      //alert(event.target.id); // ай ди
-      //alert( event.target.id.indexOf(';') );
+			let Option = event.target;
 
-      let maxVotesByOneUser = event.target.id.substring(
-        event.target.id.indexOf(";") + 1
-      );
-      let OptionID = event.target.id.substring(0, event.target.id.indexOf(";"));
-      console.log(
-        "maxVotesByOneUser - " +
-          maxVotesByOneUser +
-          " " +
-          "OptionID - " +
-          OptionID
-      );
-
-      this.AllUserAnswers++;
-      console.log(this.AllUserAnswers);
-      if (this.AllUserAnswers > maxVotesByOneUser) {
-        alert("ErroR!!");
-        event.target.checked = false;
+      if (this.CurrentVoting.maxVotesByOneUser == 1) {
+        this.ChosenOptions.unshift(Option.id);
+        if (this.ChosenOptions.length > 1)
+          document.getElementById(this.ChosenOptions.pop()).checked = false;
+      } else {
+        if (Option.checked === false) {
+          this.ChosenOptions.splice(
+            this.ChosenOptions.indexOf(Option.id) - 1,
+            1
+          );
+        } else {
+          this.ChosenOptions.push(Option.id);
+          if (
+            this.ChosenOptions.length > this.CurrentVoting.maxVotesByOneUser
+          ) {
+            Option.checked = true;
+						this.ChosenOptions.pop();
+						document.getElementById(this.ChosenOptions.pop()).checked = false;
+						this.ChosenOptions.push(Option.id);
+            console.log(this.ChosenOptions);
+          }
+        }
       }
     }
   }

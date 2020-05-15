@@ -63,24 +63,16 @@ export default {
 
 <style>
 @import "assets/reboot.css";
-/*#app {
+ #app {
   display: flex;
-		flex-wrap: wrap;
-		justify-content: space-around;
-		
-  background-color: aqua;
+	flex-direction: column;
+	justify-content: center;
+}
 
-}*/
 div {
   flex: 200px;
   margin: 5px 5px 5px 5px;
   /*background-color: white;*/
-}
-
-.myclass {
-  border: 4px double black; /* Параметры границы */
-  background: #fc3; /* Цвет фона */
-  padding: 10px;
 }
 
 button {
