@@ -1,16 +1,6 @@
 <template>
   <div id="app">
-    <router-link :to="{name: 'Votings'}">
-      <div>votings</div>
-    </router-link>
-    <div id="form">
-      <input type="text" id="Email" placeholder="Enter your email" />
-      <input type="text" id="UserPassword" placeholder="Enter your password" />
-      <input type="text" id="UserName" placeholder="Enter your name" />
-      <input type="text" id="Age" placeholder="Enter your age" />
-      <button v-on:click="sendData">PUSH</button>
-    </div>
-    <hr />
+    <h1>TEST</h1>
     <router-view />
   </div>
 </template>
