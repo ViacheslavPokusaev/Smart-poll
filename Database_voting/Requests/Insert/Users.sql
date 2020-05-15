@@ -1,4 +1,4 @@
-﻿USE Smart_voting;
+﻿USE Smart_voting_release;
 
 INSERT INTO Users
 VALUES

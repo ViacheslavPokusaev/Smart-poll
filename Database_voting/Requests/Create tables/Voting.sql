@@ -1,4 +1,4 @@
-USE Smart_voting;
+USE Smart_voting_release;
 
 CREATE TABLE Voting
 (
@@ -10,6 +10,7 @@ CREATE TABLE Voting
 	DeadLine DATE NOT NULL CHECK(DeadLine >= GETDATE()),
 	QuestionInVoting NVARCHAR(300) NOT NULL,
 	PublicOrPrivate BIT DEFAULT 1,
+	DateCreatingVoting DATE NOT NULL DEFAULT SYSUTCDATETIME(),
 	CHECK(MaxVotesByOneUser <= MaxOptions),
 	CONSTRAINT FK_Voting_To_Users FOREIGN KEY (UserID) REFERENCES Users (UserID) ON DELETE CASCADE
 )
