@@ -22,10 +22,11 @@ namespace ServerCore.Models.RealizationInrerface
             {
                 List<Voting> VotingsWithOptions = new List<Voting>();
                 var AllVotings = db.Query<Voting>("SELECT * FROM Voting").ToArray();
-                //var AllOptions = db.Query<Voting>("SELECT * FROM Voting").ToList();
+         
                 for (int i = 0; i < AllVotings.Length; i++)
                 {
                     AllVotings[i].Options = db.Query<Option>("SELECT * FROM Options WHERE VotingID = @VotingID", new { AllVotings[i].VotingID }).ToArray();
+                    AllVotings[i].UserName = db.Query<string>("SELECT UserName FROM Users WHERE UserID = @UserID", new { AllVotings[i].UserID }).FirstOrDefault();
                     VotingsWithOptions.Add(AllVotings[i]);
                 }
                 return VotingsWithOptions;

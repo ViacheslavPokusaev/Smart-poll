@@ -35,7 +35,7 @@ namespace ServerCore
                                   });
             });
 
-            string con = "Server=LocalHost; Database=Smart_voting; Trusted_Connection=True";
+            string con = "Server=LocalHost; Database=Smart_voting_release; Trusted_Connection=True";
             services.AddTransient<IOptionsFunctional, OptionsFunctional>(provider => new OptionsFunctional(con));
             services.AddTransient<IUserFunctional, UserFunctional>(provider => new UserFunctional(con));
             services.AddTransient<IVotingFunctional, VotingFunctional>(provider => new VotingFunctional(con));  

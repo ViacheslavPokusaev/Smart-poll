@@ -47,7 +47,7 @@ export default {
   
 	flex-basis: 250px;
 
-  height: 250px;
+  min-height: 250px;
   max-width: 250px;
 }
 </style>

@@ -9,7 +9,8 @@ namespace ServerCore.Models.Classes
     {
         public int VotingID { get; set; }
         public int UserID { get; set; }
-        public bool AddNewOptins { get; set; }
+        public string UserName { get; set; }
+        public bool AddNewOptions { get; set; }
         public int MaxOptions { get; set; }
         public int MaxVotesByOneUser { get; set; }
         public string QuestionInVoting { get; set; }

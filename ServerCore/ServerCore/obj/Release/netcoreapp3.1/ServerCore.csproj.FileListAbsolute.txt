@@ -39,4 +39,3 @@ C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.dll
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.pdb
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.genruntimeconfig.cache
-C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.csprojAssemblyReference.cache
