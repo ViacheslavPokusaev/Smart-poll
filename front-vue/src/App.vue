@@ -1,6 +1,8 @@
 <template>
   <div id="app">
-    <ListVotings />
+    <router-link :to="{name: 'Votings'}">
+      <div>votings</div>
+    </router-link>
     <div id="form">
       <input type="text" id="Email" placeholder="Enter your email" />
       <input type="text" id="UserPassword" placeholder="Enter your password" />
@@ -63,10 +65,10 @@ export default {
 
 <style>
 @import "assets/reboot.css";
- #app {
+#app {
   display: flex;
-	flex-direction: column;
-	justify-content: center;
+  flex-direction: column;
+  justify-content: center;
 }
 
 div {

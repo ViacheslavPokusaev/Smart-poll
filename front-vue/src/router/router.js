@@ -1,21 +1,26 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import Home from "../views/Home.vue";
+import App from "../App.vue";
+import Votings from "../components/ListVotings.vue";
 
 Vue.use(VueRouter);
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: Home,
+    name: "StartPage",
+    component: App,
+  },
+  {
+    path: "/Votings",
+    name: "Votings",
+    component: Votings,
   },
 ];
 
 const router = new VueRouter({
   mode: "history",
-  base: process.env.BASE_URL,
-  routes,
+  options: routes,
 });
 
 export default router;
