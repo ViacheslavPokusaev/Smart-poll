@@ -1,14 +1,13 @@
 <template>
   <div>
     <ListVotings />
-    <a href="/Home">Home</a>
+    <router-link to="/">Home</router-link>
   </div>
 </template>
 
 <script>
 import ListVotings from "@/components/ListVotings.vue";
 export default {
-  name: "home",
   components: {
     ListVotings
   }

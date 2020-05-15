@@ -1,24 +1,20 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import AllVotings from "@/views/AllVotings.vue";
-import Home from "@/views/Home.vue";
+import AllVotings from "@/views/AllVotings";
+import Home from "@/views/Home";
 
 Vue.use(VueRouter);
 
-const routes = [
-  {
-    path: "/",
-    component: Home,
-  },
-  {
-    path: "/AllVotings",
-    component: AllVotings,
-  },
-];
-
-const router = new VueRouter({
+export default new VueRouter({
   mode: "history",
-  routes,
+  routes: [
+    {
+      path: "/",
+      component: Home,
+    },
+    {
+      path: "/allvotings",
+      component: AllVotings,
+    },
+  ],
 });
-
-export default router;

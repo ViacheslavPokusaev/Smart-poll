@@ -7,7 +7,6 @@
 
 <script>
 import axios from "axios";
-import ListVotings from "@/components/ListVotings.vue";
 
 export default {
   name: "app",
@@ -48,13 +47,14 @@ export default {
     }
   },
   components: {
-    ListVotings
+
   }
 };
 </script>
 
 <style>
 @import "assets/reboot.css";
+
 #app {
   display: flex;
   flex-direction: column;

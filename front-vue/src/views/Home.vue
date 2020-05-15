@@ -1,14 +1,12 @@
 <template>
-  <div id="app">
-    <div id="form">
-      <input type="text" id="Email" placeholder="Enter your email" />
-      <input type="text" id="UserPassword" placeholder="Enter your password" />
-      <input type="text" id="UserName" placeholder="Enter your name" />
-      <input type="text" id="Age" placeholder="Enter your age" />
-      <button v-on:click="sendData">PUSH</button>
-    </div>
+  <div id="form">
+    <input type="text" id="Email" placeholder="Enter your email" />
+    <input type="text" id="UserPassword" placeholder="Enter your password" />
+    <input type="text" id="UserName" placeholder="Enter your name" />
+    <input type="text" id="Age" placeholder="Enter your age" />
+    <button v-on:click="sendData">PUSH</button>
     <hr />
-    <a href="/Votings">Our Votings</a>
+    <router-link to="/allvotings">Our Votings</router-link>
   </div>
 </template>
 
@@ -16,7 +14,7 @@
 import axios from "axios";
 
 export default {
-  name: "app",
+  name: "form",
   data() {
     return {
       addNewOptions: null
@@ -31,11 +29,6 @@ export default {
       // }
     };
   },
-  // created() {
-  //   axios.get(this.url.votings).then(response => {
-  //     this.AllVotings = response.data[0];
-  //   });
-  // },
   methods: {
     sendData: function() {
       let form = document.getElementById("form");
@@ -54,28 +47,7 @@ export default {
     }
   },
   components: {
-    ListVotings
+
   }
 };
 </script>
-
-<style>
-@import "assets/reboot.css";
-#app {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-div {
-  flex: 200px;
-  margin: 5px 5px 5px 5px;
-  /*background-color: white;*/
-}
-
-button {
-  background: aqua;
-  border: 1px solid black;
-  border-radius: 5px;
-}
-</style>
