@@ -9,6 +9,7 @@ namespace ServerCore.Models.Inrerfaces
         List<Voting> GetAllVotings();
         Voting Get(int VotingID);
         List<Voting> GetUserVotings(int UserID);
+        List<Voting> GetVotings(int TypeVoting, int UserID = -1);
         void DeleteVoting(int VotingID);
     }
 }

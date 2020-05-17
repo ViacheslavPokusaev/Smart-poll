@@ -1,7 +1,8 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import AllVotings from "@/views/AllVotings";
-import Home from "@/views/Home";
+import Registration from "@/views/Registration";
+import SignIn from "@/views/SignIn";
 
 Vue.use(VueRouter);
 
@@ -10,11 +11,16 @@ export default new VueRouter({
   routes: [
     {
       path: "/",
-      component: Home,
-    },
+			component: SignIn,
+		},
+		{
+			path: "/signup",
+			component: Registration,
+		},
     {
       path: "/allvotings",
-      component: AllVotings,
-    },
+			component: AllVotings,
+			props: true
+		},
   ],
 });

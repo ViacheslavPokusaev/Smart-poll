@@ -91,4 +91,9 @@ export default {
 </script>
 
 <style scoped>
+button {
+  background: aqua;
+  border: 1px solid black;
+  border-radius: 5px;
+}
 </style>

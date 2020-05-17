@@ -9,31 +9,53 @@ namespace ServerCore.Controllers
     [Route("[controller]")]
     public class VotingController : ControllerBase
     {
+
         private IVotingFunctional votingFunctional;
         public VotingController(IVotingFunctional votingFunctional)
         {
             this.votingFunctional = votingFunctional;
         }
+
         // GET: <controller>
         [HttpGet]
         public IEnumerable<List<Voting>> Get()
         {
-
             yield return votingFunctional.GetAllVotings();
         }
 
-        // GET <controller>/id
-        [HttpGet("{id}")]
-        public Voting Get(int id)
+        // GET: <controller>/smt
+        [HttpGet("smt")]
+        public int GetSmt()
         {
-            return votingFunctional.Get(id);
+            return 1;
         }
 
-        //GET<controller>/id
-        [HttpGet("user/{id}")]
-        public IEnumerable<List<Voting>> GetUserVotings(int id)
+        //GET<controller>/common/public
+        [HttpGet("common/public")]
+        public IEnumerable<List<Voting>> GetCommonVotings()
         {
-            yield return votingFunctional.GetUserVotings(id);
+            yield return votingFunctional.GetVotings(0);
+        }
+
+        //GET<controller>/common/deadline
+        [HttpGet("common/deadline")]
+        public IEnumerable<List<Voting>> GetDeadlineVotings()
+        {
+            yield return votingFunctional.GetVotings(2);
+        }
+
+        //GET<controller>/private/UserID
+        [HttpGet("privatevotings/{userid}")]
+        public IEnumerable<List<Voting>> GetPrivateVotings(int UserID)
+        {
+            yield return votingFunctional.GetVotings(1, UserID);
+        }
+
+        //GET<controller>/uservotings/UserID
+        [HttpGet("uservotings/{userid}")]
+        public IEnumerable<List<Voting>> GetUserVotings(int UserID)
+        {
+            yield return votingFunctional.GetVotings(3, UserID);
         }
 
         // GET <controller>/id

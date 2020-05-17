@@ -6,7 +6,7 @@
     <input type="text" id="Age" placeholder="Enter your age" />
     <button v-on:click="sendData">PUSH</button>
     <hr />
-    <router-link to="/allvotings">Our Votings</router-link>
+    <a href="/allvotings">Our Votings</a>
   </div>
 </template>
 
@@ -51,3 +51,24 @@ export default {
   }
 };
 </script>
+
+<style>
+@import "assets/reboot.css";
+#app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+div {
+  flex: 200px;
+  margin: 5px 5px 5px 5px;
+  /*background-color: white;*/
+}
+
+button {
+  background: aqua;
+  border: 1px solid black;
+  border-radius: 5px;
+}
+</style>
