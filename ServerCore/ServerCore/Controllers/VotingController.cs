@@ -23,13 +23,6 @@ namespace ServerCore.Controllers
             yield return votingFunctional.GetAllVotings();
         }
 
-        // GET: <controller>/smt
-        [HttpGet("smt")]
-        public int GetSmt()
-        {
-            return 1;
-        }
-
         //GET<controller>/common/public
         [HttpGet("common/public")]
         public IEnumerable<List<Voting>> GetCommonVotings()
@@ -58,30 +51,30 @@ namespace ServerCore.Controllers
             yield return votingFunctional.GetVotings(3, UserID);
         }
 
-        // GET <controller>/id
-        //[HttpGet("{id}")]
-        //public Voting Get(int id)
-        //{
-        //    return votingFunctional.Get(id);
-        //}
-
         // POST <controller>
         [HttpPost]
         public void Post(Voting voting)
         {
-            if (voting == null) {BadRequest(); return; }
+            if (voting == null) { BadRequest(); return; }
 
             votingFunctional.Create(voting);
+            Ok();
         }
 
-        // PUT <controller>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
+        // POST <controller>/delete
+        [HttpPost("delete")]
+        public void Delete(Voting voting)
+        { 
+            votingFunctional.DeleteVoting(voting.VotingID);
+            Ok();
+        }
 
-        // DELETE <controller>
-        [HttpPost]
-        public void Delete(int VotingID) => votingFunctional.DeleteVoting(VotingID);
+        // POST <controller>/update
+        [HttpPost("update")]
+        public void Update(Voting voting)
+        {
+            votingFunctional.Update(voting);
+            Ok();
+        }
     }
 }

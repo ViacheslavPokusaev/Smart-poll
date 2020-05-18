@@ -33,13 +33,6 @@ namespace ServerCore.Models.RealizationInrerface
                 return VotingsWithOptions;
             }
         }
-        public List<Voting> GetUserVotings(int UserID)
-        {
-            using (IDbConnection db = new SqlConnection(connectionString))
-            {
-                return db.Query<Voting>("SELECT * FROM Voting WHERE UserID = @UserID", new { UserID }).ToList();
-            }
-        }
 
         /*Votings list*/
         // 0 - public
@@ -88,13 +81,6 @@ namespace ServerCore.Models.RealizationInrerface
                 return VotingsWithOptions;
             }
         }
-        public Voting Get(int VotingID)
-        {
-            using (IDbConnection db = new SqlConnection(connectionString))
-            {
-                return db.Query<Voting>("SELECT * FROM Voting WHERE VotingID = @VotingID", new { VotingID }).FirstOrDefault();
-            }
-        }
         public void Create(Voting voting)
         {
             using (IDbConnection db = new SqlConnection(connectionString))
@@ -111,9 +97,22 @@ namespace ServerCore.Models.RealizationInrerface
                 //user.Id = userId.Value;
             }
         }
+        public void Update(Voting voting)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                var sqlQuery = "UPDATE Voting SET AddNewOptions = @AddNewOptions, " +
+                    "MaxOptions = @MaxOptions, " +
+                    "MaxVotesByOneUser = @MaxVotesByOneUser, " +
+                    "QuestionInVoting = @QuestionInVoting, " +
+                    "DeadLine = @DeadLine, " +
+                    "PublicOrPrivate = @PublicOrPrivate" +
+                    " WHERE VotingID = @VotingID";
+                db.Execute(sqlQuery, voting);
+            }
+        }
         public void DeleteVoting(int VotingID)
         {
-            // не выходит
             using (IDbConnection db = new SqlConnection(connectionString))
             {
                 var sqlQuery = "DELETE FROM Voting WHERE @VotingID = VotingID";

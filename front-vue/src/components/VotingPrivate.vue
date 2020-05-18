@@ -1,6 +1,6 @@
 <template>
   <div id="voting">
-    <button @click="DeleteVoting">Удалить голосование</button>
+    <button @click="$emit('Delete-Voting', CurrentVoting.votingID, 'private');">Удалить голосование</button>
     <input type="text" v-model="CurrentVoting.questionInVoting" />
     <hr />
     <div
@@ -17,7 +17,7 @@
     Конец голосования -
     <input type="text" v-model="NormalData" />
     <input type="checkbox" id="PubOrPri" v-model="PubOrPri" />
-    <label for="PubOrPri">Оставить приватным? {{PubOrPri}}</label>
+    <label for="PubOrPri">Оставить приватным?</label>
     <br />
     <button>Сохранить изменения</button>
   </div>
@@ -70,9 +70,6 @@ export default {
         elem.value = "";
         alert("Число раз должно быть меньше количества вариантов!");
       }
-		},
-		DeleteVoting: function(){
-			axios.delete("http://localhost:5001/voting", { data: { VotingID: this.CurrentVoting.votingID } });
 		}
   }
 };

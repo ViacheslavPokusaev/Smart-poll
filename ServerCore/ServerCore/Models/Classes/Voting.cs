@@ -17,5 +17,6 @@ namespace ServerCore.Models.Classes
         public DateTime DeadLine { get; set; }
         public bool PublicOrPrivate { get; set; }
         public Option[] Options { get; set; }
+        public UserAnswer[] UserAnswers { get; set; }
     }
 }

@@ -1,10 +1,10 @@
 <template>
   <div id="listvotings" v-if="User.TypeVoting == 'private'">
     <div class="myclass" v-for="(Voting) in Votings" :key="Voting.index">
-      <VotingPrivate :CurrentVoting="Voting" :User="User" />
+      <VotingPrivate :CurrentVoting="Voting" :User="User" v-on:Delete-Voting="DeleteVoting" />
     </div>
   </div>
-	<div id="listvotings" v-else>
+  <div id="listvotings" v-else>
     <div class="myclass" v-for="(Voting) in Votings" :key="Voting.index">
       <OneVoting :CurrentVoting="Voting" :User="User" />
     </div>
@@ -21,14 +21,30 @@ export default {
   name: "ListVotings",
   data() {
     return {
+      update: "notdelete",
       Votings: {},
       url: {
         active: "http://localhost:5001/voting/common/public",
         privateVot: "http://localhost:5001/voting/privatevotings/", // need UserID
         deadline: "http://localhost:5001/voting/common/deadline",
-        uservotings: "http://localhost:5001/voting/uservotings/" // need UserID
+        uservotings: "http://localhost:5001/voting/uservotings/", // need UserID
+        delete: "http://localhost:5001/voting/delete"
       }
     };
+  },
+  computed: {
+    UpdateList: function() {
+      if (this.update !== "notdelete") {
+        if (this.update === "private") {
+          axios
+            .get(this.url.privateVot + `${this.User.UserID}`)
+            .then(response => {
+              console.log(`${this.User.UserID}`);
+              this.Votings = response.data[0];
+            });
+        }
+      }
+    }
   },
   mounted: function() {
     if (this.User.TypeVoting === "active") {
@@ -51,9 +67,18 @@ export default {
       });
     }
   },
+  methods: {
+    DeleteVoting(VotingID, TypeVoting) {
+      console.log(VotingID);
+      axios.post(this.url.delete, { VotingID: VotingID }).then(() => this.UpdateList).catch(error => {
+        alert("Невозможно удалить голосование!");
+      });
+      this.update = TypeVoting;
+    }
+  },
   components: {
-		OneVoting,
-		VotingPrivate
+    OneVoting,
+    VotingPrivate
   }
 };
 </script>
