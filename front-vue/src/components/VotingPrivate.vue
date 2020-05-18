@@ -1,6 +1,6 @@
 <template>
   <div id="voting">
-    <button @click="$emit('Delete-Voting', CurrentVoting.votingID, 'private');">Удалить голосование</button>
+    <button @click="$emit('Delete-Voting', CurrentVoting.votingID, 'private')">Удалить голосование</button>
     <input type="text" v-model="CurrentVoting.questionInVoting" />
     <hr />
     <div
@@ -8,18 +8,27 @@
       :key="properties.index"
       :id="properties.optionID"
     >
-      <input type="text" v-model="properties.nameOption" />
-      <button :id="properties.optionID" @change="deleteOption">&#10008;</button>
+      <input type="text" v-model="properties.nameOption" v-bind:unique="CurrentVoting.votingID" />
+      <button :id="properties.optionID" @click="deleteOption">&#10008;</button>
     </div>
-    <button :id="this.CurrentVoting.votingID" @click="addOption">+ вариант</button>
+    <button :id="CurrentVoting.votingID" @click="addOption">+ вариант</button>
+    <br />Максимум вариантов -
+    <input type="text" v-model.number="CurrentVoting.maxOptions" />
     Максимум голосов 1 юзером -
-    <input type="text" id="checkMaxVotes" @blur="checkMaxVotes" />
+    <input
+      type="text"
+      @blur="checkMaxVotes"
+      v-model.number="CurrentVoting.maxVotesByOneUser"
+    />
     Конец голосования -
     <input type="text" v-model="NormalData" />
-    <input type="checkbox" id="PubOrPri" v-model="PubOrPri" />
+    <input type="checkbox" id="AddOptions" v-model="CurrentVoting.addNewOptions" />
+    <label for="AddOptions">Разрешить добавление вариантов?</label>
+    <br />
+    <input type="checkbox" id="PubOrPri" v-model="CurrentVoting.publicOrPrivate" />
     <label for="PubOrPri">Оставить приватным?</label>
     <br />
-    <button>Сохранить изменения</button>
+    <button @click="$emit('Update-Voting', Publish(), CountOpt, 'private')">Сохранить изменения</button>
   </div>
 </template>
 
@@ -31,8 +40,8 @@ export default {
   name: "Voting",
   data() {
     return {
-			NewOption: null,
-			PubOrPri: this.CurrentVoting.publicOrPrivate,
+      NewVoting: {},
+      NewOption: null,
       NormalData: this.CurrentVoting.deadLine,
       RandomID: this.CurrentVoting.votingID,
       CountOpt: this.CurrentVoting.options.length
@@ -42,7 +51,6 @@ export default {
   mounted: function() {},
   methods: {
     deleteOption: function(event) {
-      console.log(event.target.id);
       let id = event.target.id;
       event.target.remove();
       let option = document.getElementById(id);
@@ -53,6 +61,7 @@ export default {
       let input = document.createElement("input");
       input.id = this.RandomID;
       input.type = "text";
+      input.setAttribute("unique" + this.RandomID, this.RandomID);
       let button = document.createElement("button");
       button.id = this.RandomID;
       button.innerHTML = "&#10008;";
@@ -63,14 +72,37 @@ export default {
       this.CountOpt++;
     },
     checkMaxVotes: function() {
-      let elem = document.getElementById("checkMaxVotes");
-      console.log(elem.value);
-      console.log(this.CurrentVoting.maxVotesByOneUser);
-      if (Number(elem.value) > this.CountOpt) {
-        elem.value = "";
+      if (
+        this.CurrentVoting.maxVotesByOneUser > this.CountOpt &&
+        this.CountOpt != 0
+      ) {
+        this.CurrentVoting.maxVotesByOneUser = null;
         alert("Число раз должно быть меньше количества вариантов!");
       }
-		}
+    },
+    Publish: function() {
+      let inputs = document.querySelectorAll("[unique" + this.RandomID + "]");
+
+      this.NewVoting["Options"] = [];
+      for (let elem of inputs) {
+        if (elem.value != "") this.NewVoting["Options"].push(elem.value);
+			}
+			
+      if (this.CountOpt != 0 && this.NewVoting["Options"].length != 0) {
+        this.NewVoting["VotingID"] = this.CurrentVoting.votingID;
+        this.NewVoting["AddNewOptions"] = this.CurrentVoting.addNewOptions;
+        this.NewVoting["MaxOptions"] = this.CurrentVoting.maxOptions;
+        this.NewVoting[
+          "MaxVotesByOneUser"
+        ] = this.CurrentVoting.maxVotesByOneUser;
+        this.NewVoting[
+          "QuestionInVoting"
+        ] = this.CurrentVoting.questionInVoting;
+        this.NewVoting["DeadLine"] = this.NormalData;
+        this.NewVoting["PublicOrPrivate"] = this.CurrentVoting.publicOrPrivate;
+        return this.NewVoting;
+      } else return "";
+    }
   }
 };
 </script>

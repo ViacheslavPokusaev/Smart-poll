@@ -37,9 +37,6 @@
     <hr />
 
     <button type="submit" class="registerbtn" @click="checkEdits">Registration</button>
-    <!-- <router-link :to="{name: 'Home', params: User}">
-      <span @click="checkEdits">Registration</span>
-    </router-link>-->
 
     <div class="signin">
       <p>
@@ -65,8 +62,7 @@ export default {
       User: {
         UserID: null
       },
-
-      userPost: "http://localhost:5001/user/signup"
+      userPost: "http://localhost:5001/user/singup"
     };
   },
   methods: {
@@ -92,7 +88,6 @@ export default {
           .post(this.userPost, this.addNewUser)
           .then(response => {
             this.User.UserID = response.data;
-            console.log(this.User.UserID);
             this.$router.push({ name: "Home", params: this.User });
           })
           .catch(error => {

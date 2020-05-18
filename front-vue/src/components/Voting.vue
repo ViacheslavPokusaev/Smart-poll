@@ -5,8 +5,16 @@
       <input type="checkbox" v-bind:id="properties.optionID" v-on:change="CheckAnswers" />
       <label>{{properties.nameOption}}</label>
     </div>
-    <button v-if="CurrentVoting.addNewOptions" v-bind:id="CurrentVoting.votingID">+ вариант</button>
-    <button v-bind:id="CurrentVoting.votingID">Проголосовать</button>
+    <input type="text" v-model="NewOption" v-if="CurrentVoting.addNewOptions" />
+    <button
+      v-if="CurrentVoting.addNewOptions"
+      v-bind:id="CurrentVoting.votingID"
+      @click="$emit('Add-Option', AddOption(), CurrentVoting.votingID, 'active')"
+    >+ вариант</button>
+    <button
+      v-bind:id="CurrentVoting.votingID"
+      @click="$emit('Add-Answer', Vote(), CurrentVoting.votingID, 'active')"
+    >Проголосовать</button>
     Автор - {{CurrentVoting.userName}}
     <br />
     <strong v-if="User.TypeVoting != 'deadline'">Конец голосования - {{TimeLeft}}</strong>
@@ -22,6 +30,7 @@ export default {
   name: "Voting",
   data() {
     return {
+      NewOption: "",
       CurrentDeadLine: null,
       AllUserAnswers: 0,
       ChosenOptions: []
@@ -33,7 +42,6 @@ export default {
     }
   },
   mounted: function() {
-    console.log(this.User.TypeVoting);
     if (this.User.TypeVoting != "deadline")
       setInterval(() => this.GetData(), 1000);
     else {
@@ -41,6 +49,54 @@ export default {
     }
   },
   methods: {
+    Vote: function() {
+      let i = 0;
+      let UserVot = 0;
+      if (this.CurrentVoting.userAnswers.length > 0) {
+        for (let OneUsersAnswers of this.CurrentVoting.userAnswers) {
+          for (let UserAnswer in OneUsersAnswers) {
+            if (UserAnswer == "optionID") {
+              for (let options of this.ChosenOptions) {
+                if (OneUsersAnswers[UserAnswer] == options) i++;
+              }
+            }
+            if (UserAnswer == "userID") {
+							UserVot = OneUsersAnswers[UserAnswer];
+              if (
+                OneUsersAnswers[UserAnswer] == this.User.UserID &&
+                this.CurrentVoting.maxVotesByOneUser > 1
+              )
+                i++;
+              else if (UserVot == this.User.UserID) {
+                alert("Вы уже приняли участие в этом голосовании");
+                return "";
+              }
+            }
+          }
+        }
+        if (i == 2) {
+          alert("Вы уже голосовали за это");
+          return "";
+        } else {
+          console.log("Добавляем ответ!");
+          return this.ChosenOptions;
+        }
+      } else {
+        console.log("Добавляем ответ!");
+        return this.ChosenOptions;
+      }
+    },
+    AddOption: function() {
+      let CheckOptions = this.CurrentVoting.options.length;
+      if (CheckOptions + 1 > this.CurrentVoting.maxOptions) {
+        alert("Достигнут лимит вариантов");
+        return "";
+      } else {
+        let option = this.NewOption;
+        this.NewOption = "";
+        return option;
+      }
+    },
     GetData: function() {
       let DataDeadLine = new Date(Date.parse(this.CurrentVoting.deadLine));
       let Millis = DataDeadLine - Date.now();
@@ -66,22 +122,21 @@ export default {
       this.CurrentDeadLine = d + ":" + h + ":" + m + ":" + s;
     },
     Block: function() {
-        let elements = document.getElementById("voting");
-        for (let elem of elements.children) {
-          console.log(elem);
-          if (elem.id == "VotOptions")
-            for (let opt of elem.children) {
-              console.log(opt);
-              opt.disabled = true;
-            }
-          elem.disabled = true;
+      let elements = document.getElementById("voting");
+      for (let elem of elements.children) {
+        if (elem.id == "VotOptions")
+          for (let opt of elem.children) {
+            opt.disabled = true;
+          }
+        elem.disabled = true;
       }
     },
     CheckAnswers: function(event) {
       let Option = event.target;
 
       if (this.CurrentVoting.maxVotesByOneUser == 1) {
-        this.ChosenOptions.unshift(Option.id);
+        if (Option.checked === true) this.ChosenOptions.unshift(Option.id);
+        else this.ChosenOptions.pop();
         if (this.ChosenOptions.length > 1)
           document.getElementById(this.ChosenOptions.pop()).checked = false;
       } else {
@@ -99,7 +154,6 @@ export default {
             this.ChosenOptions.pop();
             document.getElementById(this.ChosenOptions.pop()).checked = false;
             this.ChosenOptions.push(Option.id);
-            console.log(this.ChosenOptions);
           }
         }
       }

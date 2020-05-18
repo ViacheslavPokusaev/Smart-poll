@@ -1,6 +1,5 @@
 <template>
   <div>
-    {{$route.params}}
     <!-- <Menu :UserID="$route.params.UserID" /> -->
     <button @click="Goto">Back to Home</button>
     <ListVotings :User="$route.params"/>

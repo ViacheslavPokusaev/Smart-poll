@@ -37,17 +37,5 @@ namespace ServerCore.Controllers
 
             optionsFunctional.Create(option);
         }
-
-        // PUT <controller>/5
-        //[HttpPut("{id}")]
-        //public void Put(int id, [FromBody]string value)
-        //{
-        //}
-
-        // DELETE <controller>/5
-        //[HttpDelete("{id}")]
-        //public void Delete(int id)
-        //{
-        //}
     }
 }

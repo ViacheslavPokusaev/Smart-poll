@@ -41,7 +41,7 @@ namespace ServerCore.Models.RealizationInrerface
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                var sqlQuery = "INSERT INTO Voting (Name, Age) VALUES(@Name, @Age)";
+                var sqlQuery = "INSERT INTO Options (VotingID, NameOption) VALUES(@VotingID, @NameOption)";
                 db.Execute(sqlQuery, option);
 
                 // если мы хотим получить id добавленного пользователя

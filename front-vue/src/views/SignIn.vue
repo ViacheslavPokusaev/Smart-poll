@@ -63,11 +63,9 @@ export default {
           .post(this.userPost, this.addNewUser)
           .then(response => {
             this.User.UserID = response.data;
-            console.log(this.User.UserID);
             this.$router.push({ name: "Home", params: this.User });
           })
           .catch(error => {
-            console.log(error);
             this.addNewUser.Email = "";
             this.addNewUser.UserPassword = "";
             alert("Неправильный логин или пароль!");

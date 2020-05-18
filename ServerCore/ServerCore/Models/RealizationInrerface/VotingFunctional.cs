@@ -46,6 +46,7 @@ namespace ServerCore.Models.RealizationInrerface
                 List<Voting> VotingsWithOptions = new List<Voting>();
                 Voting[] Votings = default;
                 DateTime DateToday = DateTime.Today;
+                int Public = 0;
 
                 switch (TypeVoting)
                 {
@@ -60,14 +61,13 @@ namespace ServerCore.Models.RealizationInrerface
                             break;
                         }
                     case 2:
-                        {
-                            int Public = 0;
+                        {                           
                             Votings = db.Query<Voting>("SELECT * FROM Voting WHERE PublicOrPrivate = @Public AND DeadLine < @DateToday", new { Public, DateToday }).ToArray();
                             break;
                         }
                     default:
                         {
-                            Votings = db.Query<Voting>("SELECT * FROM Voting WHERE UserID = @UserID", new { UserID }).ToArray();
+                            Votings = db.Query<Voting>("SELECT * FROM Voting WHERE UserID = @UserID AND PublicOrPrivate=@Public", new { Public, UserID }).ToArray();
                             break;
                         }
                 }
@@ -75,6 +75,12 @@ namespace ServerCore.Models.RealizationInrerface
                 for (int i = 0; i < Votings.Length; i++)
                 {
                     Votings[i].Options = db.Query<Option>("SELECT * FROM Options WHERE VotingID = @VotingID", new { Votings[i].VotingID }).ToArray();
+                    foreach (Option option in Votings[i].Options)
+                    {
+                        var UserAnswers = db.Query<UserAnswer>("SELECT * FROM UsersAnswers WHERE OptionID = @OptionID", new { option.OptionID }).ToArray();
+                        Votings[i].UserAnswers = UserAnswers;
+                    }
+                    
                     Votings[i].UserName = db.Query<string>("SELECT UserName FROM Users WHERE UserID = @UserID", new { Votings[i].UserID }).FirstOrDefault();
                     VotingsWithOptions.Add(Votings[i]);
                 }

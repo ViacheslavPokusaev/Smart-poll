@@ -1,7 +1,6 @@
 <template>
   <div>
     <Menu :UserID="$route.params.UserID" />
-		{{$route.params}}
 		Тут будет контент
   </div>
 </template>
