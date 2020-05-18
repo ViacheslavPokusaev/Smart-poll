@@ -80,8 +80,8 @@ namespace ServerCore.Controllers
         //{
         //}
 
-        // DELETE <controller>/5
-        [HttpDelete("{id}")]
+        // DELETE <controller>
+        [HttpPost]
         public void Delete(int VotingID) => votingFunctional.DeleteVoting(VotingID);
     }
 }

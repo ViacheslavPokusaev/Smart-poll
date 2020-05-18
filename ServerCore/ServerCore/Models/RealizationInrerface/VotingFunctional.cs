@@ -113,10 +113,11 @@ namespace ServerCore.Models.RealizationInrerface
         }
         public void DeleteVoting(int VotingID)
         {
+            // не выходит
             using (IDbConnection db = new SqlConnection(connectionString))
             {
                 var sqlQuery = "DELETE FROM Voting WHERE @VotingID = VotingID";
-                db.Execute(sqlQuery, VotingID);
+                db.Execute(sqlQuery, new { VotingID });
             }
         }
     }

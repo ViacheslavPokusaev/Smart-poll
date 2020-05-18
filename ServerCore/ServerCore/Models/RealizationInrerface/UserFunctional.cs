@@ -33,17 +33,25 @@ namespace ServerCore.Models.RealizationInrerface
             }
         }
 
-        public void Create(User user)
+        public int GetID(User user)
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                var sqlQuery = "INSERT INTO Users (Email, UserPassword, UserName, Age) VALUES(@Email, @UserPassword, @UserName, @Age)";
-                db.Execute(sqlQuery, user);
+                    return db.Query<int>("SELECT UserID FROM Users WHERE Email = @Email AND UserPassword = @UserPassword", new { user.Email, user.UserPassword }).FirstOrDefault();
+            }
+        }
+
+        public int Create(User user)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                //var sqlQuery = "INSERT INTO Users (Email, UserPassword, UserName, Age) VALUES(@Email, @UserPassword, @UserName, @Age)";
+                //db.Execute(sqlQuery, user);
 
                 // если мы хотим получить id добавленного пользователя
-                //var sqlQuery = "INSERT INTO Users (Name, Age) VALUES(@Name, @Age); SELECT CAST(SCOPE_IDENTITY() as int)";
-                //int? userId = db.Query<int>(sqlQuery, user).FirstOrDefault();
-                //user.Id = userId.Value;
+                var sqlQuery = "INSERT INTO Users (Email, UserPassword, UserName, Age) VALUES(@Email, @UserPassword, @UserName, @Age); SELECT CAST(SCOPE_IDENTITY() as int)";
+                int? userId = db.Query<int>(sqlQuery, user).FirstOrDefault();
+                return userId.Value;
             }
         }
     }

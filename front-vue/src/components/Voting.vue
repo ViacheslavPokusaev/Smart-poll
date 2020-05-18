@@ -1,7 +1,7 @@
 <template>
   <div id="voting">
     <strong>{{CurrentVoting.questionInVoting}}</strong>
-    <div v-for="(properties) in CurrentVoting.options" :key="properties.index">
+    <div v-for="(properties) in CurrentVoting.options" :key="properties.index" id="VotOptions">
       <input type="checkbox" v-bind:id="properties.optionID" v-on:change="CheckAnswers" />
       <label>{{properties.nameOption}}</label>
     </div>
@@ -9,7 +9,8 @@
     <button v-bind:id="CurrentVoting.votingID">Проголосовать</button>
     Автор - {{CurrentVoting.userName}}
     <br />
-    Конец голосования - {{TimeLeft}}
+    <strong v-if="User.TypeVoting != 'deadline'">Конец голосования - {{TimeLeft}}</strong>
+    <strong v-else id="STOP">Это голосование оконченно!</strong>
   </div>
 </template>
 
@@ -17,8 +18,8 @@
 import axios from "axios";
 
 export default {
-  props: ["CurrentVoting"],
-  name: "listvotings",
+  props: ["CurrentVoting", "User"],
+  name: "Voting",
   data() {
     return {
       CurrentDeadLine: null,
@@ -31,8 +32,13 @@ export default {
       return this.CurrentDeadLine;
     }
   },
-  created() {
-    setInterval(() => this.GetData(), 1000); // Обновляем значения не чаще раза в секунду. А то и реже.
+  mounted: function() {
+    console.log(this.User.TypeVoting);
+    if (this.User.TypeVoting != "deadline")
+      setInterval(() => this.GetData(), 1000);
+    else {
+      this.Block();
+    }
   },
   methods: {
     GetData: function() {
@@ -58,6 +64,18 @@ export default {
       let s = absoluteSeconds > 9 ? absoluteSeconds : "0" + absoluteSeconds;
 
       this.CurrentDeadLine = d + ":" + h + ":" + m + ":" + s;
+    },
+    Block: function() {
+        let elements = document.getElementById("voting");
+        for (let elem of elements.children) {
+          console.log(elem);
+          if (elem.id == "VotOptions")
+            for (let opt of elem.children) {
+              console.log(opt);
+              opt.disabled = true;
+            }
+          elem.disabled = true;
+      }
     },
     CheckAnswers: function(event) {
       let Option = event.target;
@@ -95,5 +113,9 @@ button {
   background: aqua;
   border: 1px solid black;
   border-radius: 5px;
+}
+
+#STOP {
+  background: red;
 }
 </style>

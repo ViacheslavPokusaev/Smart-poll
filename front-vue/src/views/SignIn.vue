@@ -7,14 +7,20 @@
     <label for="email">
       <b>Email</b>
     </label>
-    <input type="text" v-model.trim="Email" placeholder="Enter Email" name="email" required />
+    <input
+      type="text"
+      v-model.trim="addNewUser.Email"
+      placeholder="Enter Email"
+      name="email"
+      required
+    />
 
     <label for="psw">
       <b>Password</b>
     </label>
     <input
       type="password"
-      v-model.trim="UserPassword"
+      v-model.trim="addNewUser.UserPassword"
       placeholder="Enter Password"
       name="psw"
       required
@@ -22,7 +28,7 @@
 
     <hr />
 
-    <button type="submit" class="signinbth">SignIn</button>
+    <button type="submit" @click="checkEdits" class="signinbth">SignIn</button>
 
     <div class="registration">
       <p>
@@ -33,12 +39,41 @@
   </div>
 </template>
 <script>
+import axios from "axios";
 export default {
+  name: "SignIn",
   data() {
     return {
-      Email: "",
-      UserPassword: ""
+      addNewUser: {
+        Email: "",
+        UserPassword: ""
+      },
+      User: {
+        UserID: null
+      },
+      userPost: "http://localhost:5001/user/signin"
     };
+  },
+  methods: {
+    checkEdits: function() {
+      if (!this.addNewUser.Email || !this.addNewUser.UserPassword)
+        alert("Не все поля заполненны, пожалуйста, заполните их!");
+      else {
+        axios
+          .post(this.userPost, this.addNewUser)
+          .then(response => {
+            this.User.UserID = response.data;
+            console.log(this.User.UserID);
+            this.$router.push({ name: "Home", params: this.User });
+          })
+          .catch(error => {
+            console.log(error);
+            this.addNewUser.Email = "";
+            this.addNewUser.UserPassword = "";
+            alert("Неправильный логин или пароль!");
+          });
+      }
+    }
   }
 };
 </script>

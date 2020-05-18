@@ -7,49 +7,103 @@
     <label for="email">
       <b>Name</b>
     </label>
-    <input type="text" v-model.trim="UserName" placeholder="Enter Name" name="email" />
+    <input type="text" v-model.trim="addNewUser.UserName" placeholder="Enter Name" name="email" />
 
     <label for="age">
       <b>Age</b>
     </label>
-    <input type="text" v-model.number="Age" placeholder="Enter Age" name="age" />
+    <input
+      type="text"
+      @blur="checkAge"
+      v-model.number="addNewUser.Age"
+      placeholder="Enter Age"
+      name="age"
+    />
     <label for="email">
       <b>Email</b>
     </label>
-    <input type="text" v-model.trim="Email" placeholder="Enter Email" name="email" />
+    <input type="text" v-model.trim="addNewUser.Email" placeholder="Enter Email" name="email" />
 
     <label for="psw">
       <b>Password</b>
     </label>
-    <input type="password" v-model.trim="UserPassword" placeholder="Enter Password" name="psw" />
+    <input
+      type="password"
+      v-model.trim="addNewUser.UserPassword"
+      placeholder="Enter Password"
+      name="psw"
+    />
 
     <hr />
 
-    <button type="submit" class="registerbtn" @click="checkEdits">Register</button>
+    <button type="submit" class="registerbtn" @click="checkEdits">Registration</button>
+    <!-- <router-link :to="{name: 'Home', params: User}">
+      <span @click="checkEdits">Registration</span>
+    </router-link>-->
 
     <div class="signin">
       <p>
         Already have an account?
-        <router-link to="/">Sign In</router-link>
+        <router-link :to="{name: 'SignIn', params: User}">Sign In</router-link>
       </p>
     </div>
   </div>
 </template>
 
 <script>
+import axios from "axios";
 export default {
+  name: "Registration",
   data() {
     return {
-      UserName: "",
-      Age: null,
-      Email: "",
-      UserPassword: ""
+      addNewUser: {
+        UserName: "",
+        Age: null,
+        Email: "",
+        UserPassword: ""
+      },
+      User: {
+        UserID: null
+      },
+
+      userPost: "http://localhost:5001/user/signup"
     };
   },
   methods: {
+    checkAge: function() {
+      if (
+        (this.addNewUser.Age < 18 || this.addNewUser.Age > 100) &&
+        this.addNewUser.Age
+      ) {
+        alert("Вы дожны быть совершеннолетним!");
+        this.addNewUser.Age = null;
+      }
+    },
     checkEdits: function() {
-      if (!this.UserName || !this.Age || !this.Email || !this.UserPassword)
+      if (
+        !this.addNewUser.UserName ||
+        !this.addNewUser.Age ||
+        !this.addNewUser.Email ||
+        !this.addNewUser.UserPassword
+      )
         alert("Не все поля заполненны, пожалуйста, заполните их!");
+      else {
+        axios
+          .post(this.userPost, this.addNewUser)
+          .then(response => {
+            this.User.UserID = response.data;
+            console.log(this.User.UserID);
+            this.$router.push({ name: "Home", params: this.User });
+          })
+          .catch(error => {
+            console.log(error);
+            this.addNewUser.UserName = "";
+            this.addNewUser.Age = null;
+            this.addNewUser.Email = "";
+            this.addNewUser.UserPassword = "";
+            alert("Такой пользователь уже существует!");
+          });
+      }
     }
   }
 };

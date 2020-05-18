@@ -1,7 +1,12 @@
 <template>
-  <div id="listvotings">
+  <div id="listvotings" v-if="User.TypeVoting == 'private'">
     <div class="myclass" v-for="(Voting) in Votings" :key="Voting.index">
-      <OneVoting v-bind:CurrentVoting="Voting" />
+      <VotingPrivate :CurrentVoting="Voting" :User="User" />
+    </div>
+  </div>
+	<div id="listvotings" v-else>
+    <div class="myclass" v-for="(Voting) in Votings" :key="Voting.index">
+      <OneVoting :CurrentVoting="Voting" :User="User" />
     </div>
   </div>
 </template>
@@ -9,46 +14,61 @@
 <script>
 import axios from "axios";
 import OneVoting from "@/components/Voting.vue";
+import VotingPrivate from "@/components/VotingPrivate.vue";
 
 export default {
-  props: ["Filter"],
-  name: "listvotings",
+  props: ["User"],
+  name: "ListVotings",
   data() {
     return {
       Votings: {},
       url: {
         active: "http://localhost:5001/voting/common/public",
-        private: "http://localhost:5001/voting/privatevotings/", // need UserID
+        privateVot: "http://localhost:5001/voting/privatevotings/", // need UserID
         deadline: "http://localhost:5001/voting/common/deadline",
         uservotings: "http://localhost:5001/voting/uservotings/" // need UserID
       }
     };
   },
-  mounted() {
-    if (this.Filter === "active") {
+  mounted: function() {
+    if (this.User.TypeVoting === "active") {
       axios.get(this.url.active).then(response => {
+        this.Votings = response.data[0];
+      });
+    } else if (this.User.TypeVoting === "deadline") {
+      axios.get(this.url.deadline).then(response => {
+        this.Votings = response.data[0];
+      });
+    } else if (this.User.TypeVoting === "private") {
+      axios.get(this.url.privateVot + `${this.User.UserID}`).then(response => {
+        console.log(`${this.User.UserID}`);
+        this.Votings = response.data[0];
+      });
+    } else if (this.User.TypeVoting === "uservotings") {
+      axios.get(this.url.privateVot + `${this.User.UserID}`).then(response => {
+        console.log(`${this.User.UserID}`);
         this.Votings = response.data[0];
       });
     }
   },
   components: {
-    OneVoting
+		OneVoting,
+		VotingPrivate
   }
 };
 </script>
 
 <style scoped>
 div {
-  flex: 200px;
+  flex: 300px;
   margin: 5px 5px 5px 5px;
   /*background-color: white;*/
 }
 
-
 #listvotings {
   display: flex;
   flex-wrap: wrap;
-  /* justify-content: center; */
+  justify-content: center;
 
   padding: 5px 5px 5px 5px;
 }

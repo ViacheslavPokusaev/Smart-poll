@@ -30,12 +30,21 @@ namespace ServerCore.Controllers
         }
 
         // POST <controller>
-        [HttpPost]
-        public void Post(User user)
+        [HttpPost("singup")]
+        public int Post(User user)
         {
             if (user == null) BadRequest();
 
-            UserFunctional.Create(user);
+            return UserFunctional.Create(user);
+        }
+
+        // POST <controller>/signin
+        [HttpPost("signin")]
+        public int Login(User user)
+        {
+            if (user == null) BadRequest();
+
+            return UserFunctional.GetID(user);
         }
 
         // PUT <controller>/5
@@ -45,7 +54,7 @@ namespace ServerCore.Controllers
 
         //}
 
-        // DELETE <controller>/5
+        //DELETE<controller>/5
         //[HttpDelete("{id}")]
         //public void Delete(int id)
         //{
