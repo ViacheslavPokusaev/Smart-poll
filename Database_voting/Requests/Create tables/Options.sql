@@ -1,9 +1,0 @@
-USE Smart_voting_release;
-
-CREATE TABLE Options
-(
-	OptionID INT PRIMARY KEY IDENTITY,
-	VotingID INT NOT NULL,
-	NameOption NVARCHAR(300) NOT NULL,
-	CONSTRAINT FK_Options_To_Voting FOREIGN KEY (VotingID) REFERENCES Voting (VotingID) ON DELETE CASCADE
-)

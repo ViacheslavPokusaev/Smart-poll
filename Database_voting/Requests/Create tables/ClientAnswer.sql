@@ -1,0 +1,10 @@
+USE Smart_poll;
+
+CREATE TABLE ClientAnswer
+(
+	Id INT PRIMARY KEY IDENTITY,
+	OptionId INT NOT NULL,
+	ClientId INT NOT NULL,
+	CONSTRAINT FK_ClientAnswer_To_PollOption FOREIGN KEY (OptionID) REFERENCES OptionPull (Id) ON DELETE CASCADE,
+	CONSTRAINT FK_ClientAnswer_To_Client FOREIGN KEY (ClientId) REFERENCES Client (Id) ON DELETE NO ACTION
+)

@@ -1,1 +1,1 @@
-CREATE DATABASE Smart_voting_release
+CREATE DATABASE Smart_poll

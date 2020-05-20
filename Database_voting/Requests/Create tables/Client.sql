@@ -1,0 +1,10 @@
+USE Smart_poll;
+
+CREATE TABLE Client
+(
+	Id INT PRIMARY KEY IDENTITY,
+	Email VARCHAR(50) UNIQUE NOT NULL CHECK(Email !=''),
+	Passw VARCHAR(50) NOT NULL CHECK(Passw !=''),
+	FirstName NVARCHAR(50) NOT NULL,
+	Age INT DEFAULT 18 CHECK(Age > 0 AND Age < 100)
+)
