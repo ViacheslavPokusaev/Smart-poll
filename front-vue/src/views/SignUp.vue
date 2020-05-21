@@ -7,41 +7,49 @@
     <label for="email">
       <b>Name</b>
     </label>
-    <input type="text" v-model.trim="addNewUser.UserName" placeholder="Enter Name" name="email" />
+    <br />
+    <input type="text" v-model.trim="addNewClient.FirstName" placeholder="Enter Name" name="email" />
 
+    <br />
     <label for="age">
       <b>Age</b>
     </label>
+    <br />
     <input
       type="text"
       @blur="checkAge"
-      v-model.number="addNewUser.Age"
+      v-model.number="addNewClient.Age"
       placeholder="Enter Age"
       name="age"
     />
+
+    <br />
     <label for="email">
       <b>Email</b>
     </label>
-    <input type="text" v-model.trim="addNewUser.Email" placeholder="Enter Email" name="email" />
+    <br />
+    <input type="text" v-model.trim="addNewClient.Email" placeholder="Enter Email" name="email" />
 
+    <br />
     <label for="psw">
       <b>Password</b>
     </label>
+    <br />
     <input
       type="password"
-      v-model.trim="addNewUser.UserPassword"
+      v-model.trim="addNewClient.Passw"
       placeholder="Enter Password"
       name="psw"
     />
 
     <hr />
 
-    <button type="submit" class="registerbtn" @click="checkEdits">Registration</button>
+    <button type="submit" class="registerbtn" @click="checkEdits">Sign Up</button>
 
     <div class="signin">
       <p>
         Already have an account?
-        <router-link :to="{name: 'SignIn', params: User}">Sign In</router-link>
+        <router-link :to="{name: 'SignIn'}">Sign In</router-link>
       </p>
     </div>
   </div>
@@ -50,52 +58,52 @@
 <script>
 import axios from "axios";
 export default {
-  name: "Registration",
+  name: "SignUp",
   data() {
     return {
-      addNewUser: {
-        UserName: "",
+      addNewClient: {
+        Id: 0,
+        FirstName: "",
         Age: null,
         Email: "",
-        UserPassword: ""
-      },
-      User: {
-        UserID: null
-      },
-      userPost: "http://localhost:5001/user/singup"
+        Passw: ""
+      }
     };
   },
   methods: {
     checkAge: function() {
       if (
-        (this.addNewUser.Age < 18 || this.addNewUser.Age > 100) &&
-        this.addNewUser.Age
+        (this.addNewClient.Age < 18 || this.addNewClient.Age > 100) &&
+        this.addNewClient.Age
       ) {
         alert("Вы дожны быть совершеннолетним!");
-        this.addNewUser.Age = null;
+        this.addNewClient.Age = null;
       }
     },
     checkEdits: function() {
       if (
-        !this.addNewUser.UserName ||
-        !this.addNewUser.Age ||
-        !this.addNewUser.Email ||
-        !this.addNewUser.UserPassword
+        !this.addNewClient.FirstName ||
+        !this.addNewClient.Age ||
+        !this.addNewClient.Email ||
+        !this.addNewClient.Passw
       )
         alert("Не все поля заполненны, пожалуйста, заполните их!");
       else {
         axios
-          .post(this.userPost, this.addNewUser)
+          .post("http://localhost:5001/client/signup", this.addNewClient)
           .then(response => {
-            this.User.UserID = response.data;
-            this.$router.push({ name: "Home", params: this.User });
+            this.addNewClient.Id = response.data;
+            this.$router.push({
+              name: "Home",
+              params: { Id: this.addNewClient.Id }
+            });
           })
           .catch(error => {
-            console.log(error);
-            this.addNewUser.UserName = "";
-            this.addNewUser.Age = null;
-            this.addNewUser.Email = "";
-            this.addNewUser.UserPassword = "";
+            console.warn(error);
+            this.addNewClient.FirstName = "";
+            this.addNewClient.Age = null;
+            this.addNewClient.Email = "";
+            this.addNewClient.Passw = "";
             alert("Такой пользователь уже существует!");
           });
       }
@@ -116,7 +124,7 @@ export default {
 /* Full-width input fields */
 input[type="text"],
 input[type="password"] {
-  width: 100%;
+  width: 97.5%;
   padding: 15px;
   margin: 5px 0 22px 0;
   display: inline-block;

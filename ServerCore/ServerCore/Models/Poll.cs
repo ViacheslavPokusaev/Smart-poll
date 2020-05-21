@@ -16,5 +16,6 @@ namespace ServerCore.Models
         public bool IsPrivate { get; set; }
         public OptionPoll[] OptionsPoll { get; set; }
         public List<ClientAnswer[]> ClientsAnswers { get; set; }
+        public int CountAllAnswer { get; set; }
     }
 }

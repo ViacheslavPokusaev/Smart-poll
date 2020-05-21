@@ -1,9 +1,13 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
-import SwithVotings from "@/views/SwithVotings";
-import Registration from "@/views/Registration";
+import SignUp from "@/views/SignUp";
 import SignIn from "@/views/SignIn";
 import Home from "@/views/Home";
+
+import ListPollPublic from "@/components/ListPoll/ListPollPublic";
+import ListPollPrivate from "@/components/ListPoll/ListPollPrivate";
+import ListPollTakePart from "@/components/ListPoll/ListPollTakePart";
+import ListPollDeadLine from "@/components/ListPoll/ListPollDeadLine";
 
 Vue.use(VueRouter);
 
@@ -17,8 +21,8 @@ export default new VueRouter({
 		},
 		{
 			path: "/signup",
-			name: "Registration",
-			component: Registration,
+			name: "SignUp",
+			component: SignUp,
 		},
 		{
 			path: "/home",
@@ -26,30 +30,27 @@ export default new VueRouter({
 			component: Home,
 		},
     {
-			path: "/activevotings",
-			name: "ActiveVotings",
-			component: SwithVotings,
+			path: "/listpollpublic",
+			name: "ListPollPublic",
+			component: ListPollPublic,
 			props: true
 		},
-		,
 		{
-			path: "/deadlinevotings",
-			name: "DeadlineVotings",
-			component: SwithVotings,
+			path: "/listpollprivate",
+			name: "ListPollPrivate",
+			component: ListPollPrivate,
 			props: true
 		},
-		,
 		{
-			path: "/privatevotings",
-			name: "PrivateVotings",
-			component: SwithVotings,
+			path: "/listpolldeadline",
+			name: "ListPollDeadLine",
+			component: ListPollDeadLine,
 			props: true
 		},
-		,
 		{
-			path: "/myvotings",
-			name: "MyVotings",
-			component: SwithVotings,
+			path: "/listpolltakepart",
+			name: "ListPollTakePart",
+			component: ListPollTakePart,
 			props: true
 		},
   ],

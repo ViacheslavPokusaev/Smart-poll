@@ -92,7 +92,7 @@ namespace ServerCore.Services
                         }
                     case 2:
                         {
-                            ListPoll = db.Query<Poll>("SELECT * FROM Poll WHERE IsPrivate = @Public AND DeadLine < @Today", new { Public, Today }).ToArray();
+                            ListPoll = db.Query<Poll>("SELECT * FROM Poll WHERE IsPrivate = @Public AND DeadLine <= @Today", new { Public, Today }).ToArray();
                             break;
                         }
                     case 3:
@@ -108,13 +108,13 @@ namespace ServerCore.Services
                                 "INNER JOIN OptionPoll ON ClientAnswer.OptionId = OptionPoll.Id " +
                                 "WHERE ClientAnswer.ClientId = @ClientId " +
                                 "GROUP BY OptionPoll.PollId) " +
-                                "AND IsPrivate = @Public",
-                                new { ClientId, Public }).ToArray();
+                                "AND IsPrivate = @Public AND DeadLine > @Today",
+                                new { ClientId, Public, Today }).ToArray();
                             break;
                         }
                 }
 
-                
+
 
                 for (int i = 0; i < ListPoll.Length; i++)
                 {
@@ -122,11 +122,20 @@ namespace ServerCore.Services
 
                     if (TypePoll != 1)
                     {
+                        ListPoll[i].CountAllAnswer = 0;
                         ListPoll[i].ClientsAnswers = new List<ClientAnswer[]>();
                         foreach (OptionPoll option in ListPoll[i].OptionsPoll)
                         {
                             int OptionId = option.Id;
-                            ListPoll[i].ClientsAnswers.Add(db.Query<ClientAnswer>("SELECT * FROM ClientAnswer WHERE OptionId = @OptionId", new { OptionId }).ToArray());
+                            ClientAnswer[] clientAnswers = db.Query<ClientAnswer>("SELECT * FROM ClientAnswer WHERE OptionId = @OptionId", new { OptionId }).ToArray();
+                            option.CountAnswer = clientAnswers.Length;
+
+
+                            if (clientAnswers.Length != 0)
+                            {
+                                ListPoll[i].ClientsAnswers.Add(clientAnswers);
+                            }
+                            ListPoll[i].CountAllAnswer += clientAnswers.Length;
                         }
                     }
 
@@ -134,6 +143,14 @@ namespace ServerCore.Services
                     ListPollWithOptionsAndAnswers.Add(ListPoll[i]);
                 }
                 return ListPollWithOptionsAndAnswers;
+            }
+        }
+
+        public int GetIdOption(int PollId, string TextOption)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                return db.Query<int>("SELECT Id FROM OptionPoll WHERE PollId = @PollId AND TextOption = @TextOption", new { PollId, TextOption }).FirstOrDefault();
             }
         }
 
@@ -145,8 +162,18 @@ namespace ServerCore.Services
                 {
                     var sqlQuery = "INSERT INTO OptionPoll (PollId, TextOption) VALUES(" +
                     "@PollId, @TextOption)";
-                    db.Execute(sqlQuery, new {options[i].PollId, options[i].TextOption });
-                }             
+                    db.Execute(sqlQuery, new { options[i].PollId, options[i].TextOption });
+                }
+            }
+        }
+
+        public void AddOption(OptionPoll option)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                var sqlQuery = "INSERT INTO OptionPoll (PollId, TextOption) VALUES(" +
+                "@PollId, @TextOption)";
+                db.Execute(sqlQuery, new { option.PollId, option.TextOption });
             }
         }
     }

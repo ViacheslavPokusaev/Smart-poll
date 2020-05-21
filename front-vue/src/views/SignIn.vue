@@ -7,20 +7,16 @@
     <label for="email">
       <b>Email</b>
     </label>
-    <input
-      type="text"
-      v-model.trim="addNewUser.Email"
-      placeholder="Enter Email"
-      name="email"
-      required
-    />
-
+    <br />
+    <input type="text" v-model.trim="Client.Email" placeholder="Enter Email" name="email" required />
+    <br />
     <label for="psw">
       <b>Password</b>
     </label>
+    <br />
     <input
       type="password"
-      v-model.trim="addNewUser.UserPassword"
+      v-model.trim="Client.Passw"
       placeholder="Enter Password"
       name="psw"
       required
@@ -28,12 +24,12 @@
 
     <hr />
 
-    <button type="submit" @click="checkEdits" class="signinbth">SignIn</button>
+    <button type="submit" @click="checkEdits" class="signinbth">Sign In</button>
 
     <div class="registration">
       <p>
         Don't have an account?
-        <router-link to="/signup">Registration</router-link>
+        <router-link :to="{name: 'SignUp'}">Sign Up</router-link>
       </p>
     </div>
   </div>
@@ -44,30 +40,28 @@ export default {
   name: "SignIn",
   data() {
     return {
-      addNewUser: {
+      Client: {
+        Id: 0,
         Email: "",
-        UserPassword: ""
-      },
-      User: {
-        UserID: null
-      },
-      userPost: "http://localhost:5001/user/signin"
+        Passw: ""
+      }
     };
   },
   methods: {
     checkEdits: function() {
-      if (!this.addNewUser.Email || !this.addNewUser.UserPassword)
+      console.log(this.Client);
+      if (!this.Client.Email || !this.Client.Passw)
         alert("Не все поля заполненны, пожалуйста, заполните их!");
       else {
         axios
-          .post(this.userPost, this.addNewUser)
+          .post("http://localhost:5001/client/signin", this.Client)
           .then(response => {
-            this.User.UserID = response.data;
-            this.$router.push({ name: "Home", params: this.User });
+            this.Client.Id = response.data;
+            this.$router.push({ name: "Home", params: { Id: this.Client.Id } });
           })
           .catch(error => {
-            this.addNewUser.Email = "";
-            this.addNewUser.UserPassword = "";
+            this.Client.Email = "";
+            this.Client.Passw = "";
             alert("Неправильный логин или пароль!");
           });
       }
@@ -75,6 +69,7 @@ export default {
   }
 };
 </script>
+
 <style scoped>
 /* Add padding to containers */
 .container {
@@ -87,7 +82,7 @@ export default {
 /* Full-width input fields */
 input[type="text"],
 input[type="password"] {
-  width: 100%;
+  width: 97.5%;
   padding: 15px;
   margin: 5px 0 22px 0;
   display: inline-block;

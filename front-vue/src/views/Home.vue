@@ -1,8 +1,5 @@
 <template>
-  <div>
-    <Menu :UserID="$route.params.UserID" />
-		Тут будет контент
-  </div>
+    <Menu :Id="$route.params.Id" />
 </template>
 
 <script>

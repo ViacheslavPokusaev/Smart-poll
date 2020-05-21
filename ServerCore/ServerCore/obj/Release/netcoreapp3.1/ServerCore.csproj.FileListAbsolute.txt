@@ -1,7 +1,3 @@
-C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.csproj.CoreCompileInputs.cache
-C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.MvcApplicationPartsAssemblyInfo.cache
-C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.AssemblyInfoInputs.cache
-C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.AssemblyInfo.cs
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\bin\Release\netcoreapp3.1\appsettings.Development.json
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\bin\Release\netcoreapp3.1\appsettings.json
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\bin\Release\netcoreapp3.1\Properties\launchSettings.json
@@ -32,6 +28,10 @@ C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\bin
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\bin\Release\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\bin\Release\netcoreapp3.1\runtimes\win\lib\netcoreapp2.0\System.Runtime.Caching.dll
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\bin\Release\netcoreapp3.1\runtimes\win\lib\netstandard2.0\System.Security.Cryptography.ProtectedData.dll
+C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.csprojAssemblyReference.cache
+C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.csproj.CoreCompileInputs.cache
+C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.AssemblyInfoInputs.cache
+C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.AssemblyInfo.cs
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.RazorTargetAssemblyInfo.cache
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\ServerCore.csproj.CopyComplete
 C:\Users\User\Documents\COURSES\ASP.NET_Core_and_VueJs\ServerCore\ServerCore\obj\Release\netcoreapp3.1\staticwebassets\ServerCore.StaticWebAssets.Manifest.cache
