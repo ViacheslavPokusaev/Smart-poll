@@ -3,9 +3,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using ServerCore.Models.Inrerfaces;
 using Microsoft.AspNetCore.HttpsPolicy;
-using ServerCore.Models.RealizationInrerface;
+using ServerCore.Services;
 
 namespace ServerCore
 {
@@ -17,9 +16,8 @@ namespace ServerCore
         }
 
         public IConfiguration Configuration { get; }
-
-        // This method gets called by the runtime. Use this method to add services to the container.
         readonly string VueCorsPolicy = "_vueCorsPolicy";
+
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors(options =>
@@ -35,12 +33,11 @@ namespace ServerCore
                                   });
             });
 
-            string con = "Server=LocalHost; Database=Smart_voting_release; Trusted_Connection=True";
-            services.AddTransient<IOptionsFunctional, OptionsFunctional>(provider => new OptionsFunctional(con));
-            services.AddTransient<IUserFunctional, UserFunctional>(provider => new UserFunctional(con));
-            services.AddTransient<IVotingFunctional, VotingFunctional>(provider => new VotingFunctional(con));  
-            services.AddTransient<IUserAnswerFunctional, UserAnswerFunctional>(provider => new UserAnswerFunctional(con));
-            
+            string con = "Server=LocalHost; Database=Smart_poll; Trusted_Connection=True";
+            services.AddTransient<IClient, ClientRealization>(provider => new ClientRealization(con));
+            services.AddTransient<IPoll, PollRealization>(provider => new PollRealization(con));
+            services.AddTransient<IClientAnswer, ClientAnswerRealization>(provider => new ClientAnswerRealization(con));
+
             services.AddControllers();
         }
 
