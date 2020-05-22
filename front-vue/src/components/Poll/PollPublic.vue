@@ -1,25 +1,29 @@
 <template>
   <div id="poll">
     <strong id="question">{{CurrentPoll.questionText}}</strong>
-    <div v-for="(properties) in CurrentPoll.optionsPoll" :key="properties.index">
-      <input type="checkbox" :id="properties.id" v-on:change="CheckAnswers" />
+    <div v-for="(properties, index) in CurrentPoll.optionsPoll" :key="index">
+      <input
+        type="checkbox"
+        :id="index"
+        v-on:change="CheckAnswers(index, $event)"
+        v-bind:disabled="bool"
+      />
       <label :for="properties.id">{{properties.textOption}}</label>
+      <label
+        v-if="bool"
+      >- {{Math.floor((properties.countAnswer / CurrentPoll.countAllAnswer * 100), -2)}}%</label>
     </div>
     <input
       type="text"
-      v-model="TextOption"
+      v-model="textOption"
       v-if="PossibleToAddOption()"
       placeholder="Enter text new option"
     />
+    <button @click="AddOption" v-if="PossibleToAddOption()">+ Вариант</button>
     <button
-      @click="$emit('Add-Option', AddOption(), CurrentPoll.id)"
-      v-if="CurrentPoll.isPossibleToAddOption"
+      v-if="CurrentPoll.maxVotesByOneClient > 1 && !bool"
       v-bind:id="CurrentPoll.id"
-    >+ Вариант</button>
-    <button
-      v-if="CurrentPoll.maxVotesByOneClient > 1"
-      v-bind:id="CurrentPoll.id"
-      @click="$emit('Client-Answer', ChosenOptions)"
+      @click.once="Answer"
     >Голосовать</button>
 
     <strong id="Author">
@@ -39,11 +43,26 @@ export default {
   name: "PollPublic",
   data() {
     return {
-      TextOption: "",
-      ChosenOptions: []
+			smt: "smt",
+      bool: false,
+      textOption: "",
+			ChosenOptions: [],
+			ChosenOptionsId: []
     };
   },
-  computed: {},
+  beforeDestroy() {
+		console.log("Client Id - " + this.Id);
+    for (let Id of this.ChosenOptionsId) {
+			console.log("OptionId - " + this.CurrentPoll.optionsPoll[Id].id);		
+			axios
+          .post("http://localhost:5001/clientanswer", {
+            OptionId: this.CurrentPoll.optionsPoll[Id].id,
+            ClientId: this.Id
+					})
+					.catch(error => console.log(error));
+		}
+		console.log("---");
+  },
   methods: {
     PossibleToAddOption: function() {
       let CurrentOptions = this.CurrentPoll.optionsPoll.length;
@@ -53,23 +72,72 @@ export default {
       }
     },
     AddOption: function() {
-      let option = this.TextOption;
-      this.TextOption = "";
-      return option;
+      console.log(this.$route.params.Url.AddOption);
+      if (this.textOption == "") alert("Вы не ввели текст нового варианта!");
+      else {
+        axios
+          .post(this.$route.params.Url.AddOption, {
+            PollId: this.CurrentPoll.id,
+            TextOption: this.textOption
+          })
+          .then(response => {
+            this.CurrentPoll.optionsPoll.push(response.data);
+          });
+
+        this.textOption = "";
+      }
     },
-    CheckAnswers: function(event) {
-      if (event.target.checked === false) {
-        this.ChosenOptions.splice(this.ChosenOptions.indexOf(event.target.id));
+    CheckAnswers: function(index, event) {
+			console.log(this.$route.params.Url.AddAnswers);
+
+      if (this.CurrentPoll.maxVotesByOneClient == 1) {
+
+        ++this.CurrentPoll.optionsPoll[index].countAnswer;
+				++this.CurrentPoll.countAllAnswer;
+				this.ChosenOptionsId.push(index);
+				this.bool = true;
+				
       } else {
-        this.ChosenOptions.push(event.target.id);
-        if (this.ChosenOptions.length > this.CurrentPoll.maxOptionsInPoll) {
-          event.target.checked = true;
-          this.ChosenOptions.pop();
-					document.getElementById(this.ChosenOptions.pop()).checked = false;
-					let NumberId = Number(event.target.id);
-          this.ChosenOptions.push(NumberId);
+        if (event.target.checked === false) {
+          this.ChosenOptions.splice(
+            this.ChosenOptions.indexOf(event.target),
+            1
+					);
+					
+					this.ChosenOptionsId.splice(
+            this.ChosenOptionsId.indexOf(index),
+            1
+					);
+
+          --this.CurrentPoll.optionsPoll[index].countAnswer;
+          --this.CurrentPoll.countAllAnswer;
+        } else {
+					this.ChosenOptions.push(event.target);
+					this.ChosenOptionsId.push(index);
+
+          ++this.CurrentPoll.optionsPoll[index].countAnswer;
+          ++this.CurrentPoll.countAllAnswer;
+
+          if (
+            this.ChosenOptions.length > this.CurrentPoll.maxVotesByOneClient
+          ) {
+            this.ChosenOptions.pop().checked = false;
+						this.ChosenOptions.pop().checked = false;
+						this.ChosenOptionsId.pop();
+						this.ChosenOptionsId.pop();
+
+            event.target.checked = true;
+						this.ChosenOptions.push(event.target);
+						this.ChosenOptionsId.push(index);
+
+            ++this.CurrentPoll.optionsPoll[index].countAnswer;
+            ++this.CurrentPoll.countAllAnswer;
+          }
         }
       }
+    },
+    Answer: function() {
+      this.bool = true;
     }
   },
   components: {
@@ -99,7 +167,8 @@ button {
 }
 
 #NameAuthor {
-  background: red;
+  color: red;
+  font-weight: 600;
 }
 
 strong {
@@ -108,5 +177,9 @@ strong {
 
 #question {
   margin-bottom: 10px;
+}
+
+input[type="text"] {
+  margin-top: 5px;
 }
 </style>

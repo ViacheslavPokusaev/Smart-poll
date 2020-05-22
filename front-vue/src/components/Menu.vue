@@ -4,8 +4,8 @@
     <a @click="Goto('ListPollDeadLine')">Deadline</a>
     <a @click="Goto('ListPollPrivate')">Private</a>
     <a @click="Goto('ListPollPublic')">Public</a>
-    <a @click="Goto('MyVotings')">MyPoll</a>
-    <a @click="Goto('MyVotings')">Sign In</a>
+    <a @click="Goto('ListPollPublish')">Publish</a>
+    <a @click="Goto('SignIn')">Sign In</a>
     <div id="smt"></div>
   </nav>
 </template>
@@ -18,16 +18,25 @@ export default {
       url: {
         ListPollPublic: {
 					ListPoll: "http://localhost:5001/poll/common/public/",
-					AddOption: "http://localhost:5001/poll/addoption",
-					AddAnswers: "http://localhost:5001/poll/addoption",
-					GetIdOption: "http://localhost:5001/poll/getidoption"
+					AddOption: "http://localhost:5001/poll/addoption"
 				},
-        ListPollPrivate: {},
+        ListPollPrivate: {
+					ListPoll: "http://localhost:5001/poll/private/",
+					AddOption: "http://localhost:5001/poll/addoption",
+					DeleteOption: "http://localhost:5001/poll/deleteoption/",
+					Update: "http://localhost:5001/poll/update",
+					Delete: "http://localhost:5001/poll/delete/",
+					Create: "http://localhost:5001/poll"
+				},
         ListPollDeadLine: {
 					ListPoll: "http://localhost:5001/poll/common/deadline"
 				},
         ListPollTakePart: {
 					ListPoll: "http://localhost:5001/poll/takepart/"
+				},
+				ListPollPublish:{
+					ListPoll: "http://localhost:5001/poll/client/",
+					Delete: "http://localhost:5001/poll/deleteall/"
 				}
       }
     };
@@ -38,7 +47,8 @@ export default {
       if (Path == "ListPollTakePart") CurrentUrl = this.url.ListPollTakePart;
       else if (Path == "ListPollDeadLine") CurrentUrl = this.url.ListPollDeadLine;
       else if (Path == "ListPollPublic") CurrentUrl = this.url.ListPollPublic;
-      else Url = this.url.ListPollPrivate;
+			else if(Path == "ListPollPrivate") CurrentUrl = this.url.ListPollPrivate;
+			else if(Path == "ListPollPublish") CurrentUrl = this.url.ListPollPublish;
 
       this.$router.push({ name: Path, params: { Url: CurrentUrl, Id: this.Id } });
     }

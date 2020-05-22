@@ -1,7 +1,12 @@
 <template>
   <div id="ListPollDeadLine">
-    <div class="myclass" v-for="(Poll) in ListPollDead" :key="Poll.index">
-      <PollDead :CurrentPoll="Poll" :Id="$route.params.Id" />
+    <a @click="Goto('Home')">Back into Menu</a>
+    <br />
+    <br />
+    <div id="ListPollPublic">
+      <div class="myclass" v-for="(Poll) in ListPollDead" :key="Poll.index">
+        <PollDead :CurrentPoll="Poll" :Id="$route.params.Id" />
+      </div>
     </div>
   </div>
 </template>
@@ -14,17 +19,21 @@ export default {
   name: "ListPollDeadLine",
   data() {
     return {
-      ListPollDead: {},
+      ListPollDead: {}
     };
   },
-  computed: {},
   mounted: function() {
     axios.get(this.$route.params.Url.ListPoll).then(response => {
       this.ListPollDead = response.data;
     });
   },
   methods: {
-
+    Goto: function(Path) {
+      this.$router.push({
+        name: Path,
+        params: { Id: this.$route.params.Id }
+      });
+    }
   },
   components: {
     PollDead

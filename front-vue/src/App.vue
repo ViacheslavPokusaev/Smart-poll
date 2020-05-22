@@ -24,4 +24,17 @@ nav {
 	width: 100%;
 	height: 100%;
 }
+
+input[type="text"], input[type="password"]{
+	font: 16px "Oswald", sans-serif;
+}
+
+a {
+  text-decoration: none;
+  color: #fff;
+  width: 200px;
+  display: inline-block;
+  text-align: center;
+  transition: all 0.33s linear;
+}
 </style>

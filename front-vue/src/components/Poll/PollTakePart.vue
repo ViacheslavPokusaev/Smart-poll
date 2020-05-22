@@ -2,9 +2,9 @@
   <div id="poll">
     <strong id="question">{{CurrentPoll.questionText}}</strong>
     <div v-for="(properties) in CurrentPoll.optionsPoll" :key="properties.index">
-      <input type="checkbox"/>
+      <input type="checkbox" disabled/>
       <label>{{properties.textOption}} - 
-				{{Math.floor((properties.countAnswer / CurrentPoll.countAllAnswer) * 100)}}%</label>
+				{{Math.floor((properties.countAnswer / CurrentPoll.countAllAnswer * 100), -2)}}%</label>
     </div>
     <strong id="Author">Автор - <strong id="NameAuthor">{{CurrentPoll.nameAuthorPoll}}</strong></strong>
     <TimerPoll :DeadLine="CurrentPoll.deadLine"/>
@@ -18,14 +18,6 @@ import TimerPoll from "@/components/TimerPoll.vue";
 export default {
   props: ["CurrentPoll", "Id"],
   name: "PollTakePart",
-  data() {
-    return {
-      
-    };
-  },
-  methods: {
-
-	},
 	components: {
 		TimerPoll
 	}

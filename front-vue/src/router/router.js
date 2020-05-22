@@ -8,11 +8,12 @@ import ListPollPublic from "@/components/ListPoll/ListPollPublic";
 import ListPollPrivate from "@/components/ListPoll/ListPollPrivate";
 import ListPollTakePart from "@/components/ListPoll/ListPollTakePart";
 import ListPollDeadLine from "@/components/ListPoll/ListPollDeadLine";
+import ListPollPublish from "@/components/ListPoll/ListPollPublish";
 
 Vue.use(VueRouter);
 
 export default new VueRouter({
-  mode: "history",
+	mode: "history",
   routes: [
     {
 			path: "/",
@@ -51,6 +52,12 @@ export default new VueRouter({
 			path: "/listpolltakepart",
 			name: "ListPollTakePart",
 			component: ListPollTakePart,
+			props: true
+		},
+		{
+			path: "/listpollpublish",
+			name: "ListPollPublish",
+			component: ListPollPublish,
 			props: true
 		},
   ],

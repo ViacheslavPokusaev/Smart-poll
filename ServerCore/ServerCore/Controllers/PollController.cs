@@ -59,20 +59,33 @@ namespace ServerCore.Controllers
         }
 
         // POST <controller>
-        //[HttpPost]
-        //public void Post(Poll poll)
-        //{
-        //    if (poll == null) { BadRequest(); return; }
-
-        //    pollService.Create(poll);
-        //    Ok();
-        //}
+        [HttpPost]
+        public Poll Post(Poll poll)
+        {
+            return pollService.Create(poll);
+        }
 
         // POST <controller>/delete
-        [HttpPost("delete/{pollid}")]
+        [HttpPost("delete/{id}")]
         public void Delete(int Id)
         {
             pollService.DeletePoll(Id);
+            Ok();
+        }
+
+        // POST <controller>/delete
+        [HttpPost("deleteall/{id}")]
+        public void DeleteAll(int Id)
+        {
+            pollService.DeleteAllFromPoll(Id);
+            Ok();
+        }
+
+        // POST <controller>/deleteoption
+        [HttpPost("deleteoption/{id}")]
+        public void DeleteOption(int Id)
+        {
+            pollService.DeleteOption(Id);
             Ok();
         }
 
@@ -94,10 +107,9 @@ namespace ServerCore.Controllers
 
         // POST <controller>/addOption
         [HttpPost("addoption")]
-        public void AppOption(OptionPoll option)
+        public OptionPoll AppOption(OptionPoll option)
         {
-            pollService.AddOption(option);
-            Ok();
+            return pollService.AddOption(option);
         }
     }
 }

@@ -17,15 +17,17 @@ namespace ServerCore.Services
         {
             this.connectionString = con;
         }
-        public void Create(Poll poll)
+        public Poll Create(Poll poll)
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
                 var sqlQuery = "INSERT INTO Poll (ClientId, IsPossibleToAddOption, MaxOptionsInPoll, MaxVotesByOneClient, " +
                     "DeadLine, QuestionText, IsPrivate) VALUES(" +
                     "@ClientId, @IsPossibleToAddOption, @MaxOptionsInPoll, @MaxVotesByOneClient, " +
-                    "@DeadLine, @QuestionText, @IsPrivate)";
-                db.Execute(sqlQuery, poll);
+                    "@DeadLine, @QuestionText, @IsPrivate); SELECT CAST(SCOPE_IDENTITY() as int)";
+                int Id = db.Query<int>(sqlQuery, poll).FirstOrDefault();
+
+                return db.Query<Poll>("SELECT * FROM Poll WHERE Id = @Id", new { Id }).FirstOrDefault();
             }
         }
 
@@ -53,6 +55,27 @@ namespace ServerCore.Services
             }
         }
 
+        public void DeleteOption(int Id)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                var sqlQuery = "DELETE FROM OptionPoll WHERE @Id = Id";
+                db.Execute(sqlQuery, new { Id });
+            }
+        }
+
+        public void DeleteAllFromPoll(int Id)
+        {
+            using (IDbConnection db = new SqlConnection(connectionString))
+            {
+                var sqlQuery = "DELETE FROM OptionPoll WHERE @PollId = Id";
+                db.Execute(sqlQuery, new { Id });
+
+                sqlQuery = "DELETE FROM Poll WHERE @Id = Id";
+                db.Execute(sqlQuery, new { Id });
+            }
+        }
+
         /*Pull list*/
         // 0 - public
         // 1 - private
@@ -67,8 +90,6 @@ namespace ServerCore.Services
                 Poll[] ListPoll = default;
                 DateTime Today = DateTime.Today;
                 int Public = 0; int Private = 1;
-                //string Today = DateTime.Today.ToString();
-                //Today = Today.Substring(0, 10).Trim();
 
                 switch (TypePoll)
                 {
@@ -113,8 +134,6 @@ namespace ServerCore.Services
                             break;
                         }
                 }
-
-
 
                 for (int i = 0; i < ListPoll.Length; i++)
                 {
@@ -167,13 +186,14 @@ namespace ServerCore.Services
             }
         }
 
-        public void AddOption(OptionPoll option)
+        public OptionPoll AddOption(OptionPoll option)
         {
             using (IDbConnection db = new SqlConnection(connectionString))
             {
-                var sqlQuery = "INSERT INTO OptionPoll (PollId, TextOption) VALUES(" +
-                "@PollId, @TextOption)";
-                db.Execute(sqlQuery, new { option.PollId, option.TextOption });
+                var sqlQuery = "INSERT INTO OptionPoll (PollId, TextOption) VALUES(@PollId, @TextOption); SELECT CAST(SCOPE_IDENTITY() as int)";
+                int Id = db.Query<int>(sqlQuery, option).FirstOrDefault();
+
+                return db.Query<OptionPoll>("SELECT * FROM OptionPoll WHERE Id = @Id", new { Id }).FirstOrDefault();
             }
         }
     }

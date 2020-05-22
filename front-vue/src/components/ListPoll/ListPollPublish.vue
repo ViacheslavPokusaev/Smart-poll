@@ -1,64 +1,63 @@
 <template>
-  <div class = "ListPollTakePart">
-		<a @click="Goto('Home')">Back into Menu</a>
-    <br />
-    <br />
-    <div class="myclass" v-for="(Poll) in ListPollTakePart" :key="Poll.index">
-      <PollTakePart :CurrentPoll="Poll" :Id="$route.params.Id" />
+  <div class="ListPollPublish">
+    <a @click="Goto('Home')">Back into Menu</a>
+    <div class="myclass" v-for="(Poll, index) in ListPollPublish" :key="index">
+      <PollPublish :CurrentPoll="Poll" :Id="$route.params.Id" :index="index"/>
     </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import PollTakePart from "@/components/Poll/PollTakePart.vue";
+import PollPublish from "@/components/Poll/PollPublish.vue";
 
 export default {
-  name: "ListPollTakePart",
+  name: "ListPollPublish",
   data() {
     return {
-      ListPollTakePart: {}
+      ListPollPublish: {}
     };
   },
-  mounted: function() {
+  created: function() {
     axios
       .get(this.$route.params.Url.ListPoll + `${this.$route.params.Id}`)
       .then(response => {
-        this.ListPollTakePart = response.data;
+        this.ListPollPublish = response.data;
       });
   },
   methods: {
-		Goto: function(Path) {
+    Goto: function(Path) {
       this.$router.push({
         name: Path,
         params: { Id: this.$route.params.Id }
       });
-    },
-	},
+    }
+  },
   components: {
-    PollTakePart
+    PollPublish
   }
 };
 </script>
 
 <style scoped>
-.ListPollTakePart {
-	box-sizing: border-box;
+.ListPollPublish {
+  box-sizing: border-box;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  flex: 270px;
+  flex: 300px;
   margin: 5px 5px 5px 5px;
 }
 
 .myclass {
-	margin: 5px 5px 5px 5px;
-	justify-content: flex-start;
+  margin: 5px 5px 5px 5px;
+  display: flex;
+  font: 16px "Oswald", sans-serif;
   border: 4px double black; /* Параметры границы */
   background: #fc3; /* Цвет фона */
   padding: 10px;
-  flex-basis: 270px;
-  min-height: 270px;
+  flex-basis: 225px;
+  min-height: 230px;
   max-width: 270px;
 }
 </style>

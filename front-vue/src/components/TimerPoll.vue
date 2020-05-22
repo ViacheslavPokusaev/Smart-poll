@@ -1,5 +1,8 @@
 <template>
-  <span>До конца голосования - {{Timer}}</span>
+  <span>
+    До конца голосования -
+    <label>{{Timer}}</label>
+  </span>
 </template>
 
 <script>
@@ -50,7 +53,11 @@ export default {
 
 <style scoped>
 span {
-	text-align: center;
+  text-align: center;
   max-height: 24px;
+}
+label {
+  color: red;
+	font-weight: 600;
 }
 </style>

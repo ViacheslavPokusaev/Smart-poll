@@ -1,24 +1,41 @@
 <template>
-  <div id="voting">
-    <strong>{{CurrentVoting.questionInVoting}}</strong>
-    <div v-for="(properties) in CurrentVoting.options" :key="properties.index" id="VotOptions">
-      <input type="checkbox" v-bind:id="properties.optionID" v-on:change="CheckAnswers" />
-      <label>{{properties.nameOption}}</label>
+  <div id="poll" class="myclass1">
+    <strong>Текст вопроса</strong>
+    <input type="text" id="question" v-model="CurrentPoll.questionText" />
+    <strong>Варианты</strong>
+    <div class="options" v-for="(properties, index) in CurrentPoll.optionsPoll" :key="index">
+      <input type="text" class="option" v-model="properties.textOption" />
+      <button :id="index" @click="DeleteOption">&#10008;</button>
     </div>
-    <input type="text" v-model="NewOption" v-if="CurrentVoting.addNewOptions" />
-    <button
-      v-if="CurrentVoting.addNewOptions"
-      v-bind:id="CurrentVoting.votingID"
-      @click="$emit('Add-Option', AddOption(), CurrentVoting.votingID, 'active')"
-    >+ вариант</button>
-    <button
-      v-bind:id="CurrentVoting.votingID"
-      @click="$emit('Add-Answer', Vote(), CurrentVoting.votingID, 'active')"
-    >Проголосовать</button>
-    Автор - {{CurrentVoting.userName}}
+    <input type="text" v-model="textOption" placeholder="Enter text new option" />
+    <button @click="AddOption">+ вариант</button>
+    <strong id="othersettings">Технические параметры</strong>
+    Максимум вариантов
+    <input
+      type="text"
+      v-model.number="CurrentPoll.maxOptionsInPoll"
+      @blur="CheckMaxOptions"
+    />
+    Максимум голосов 1 юзером
+    <input
+      type="text"
+      v-model.number="CurrentPoll.maxVotesByOneClient"
+      @blur="CheckMaxVotes"
+    />
+    Конец голосования
+    <input type="text" v-model="CurrentPoll.deadLine" />
     <br />
-    <strong v-if="User.TypeVoting != 'deadline'">Конец голосования - {{TimeLeft}}</strong>
-    <strong v-else id="STOP">Это голосование оконченно!</strong>
+    <div>
+      <input type="checkbox" v-model="CurrentPoll.isPossibleToAddOption" id="isPossibleToAddOption" />
+      <label for="isPossibleToAddOption">Возможность добавить вариант</label>
+    </div>
+    <div>
+      <input type="checkbox" v-model="CurrentPoll.isPrivate" id="isPrivate" />
+      <label for="isPrivate">Оставить приватным?</label>
+    </div>
+    <br />
+    <button @click="$emit('Save-Changes', SaveChanges(), index)">Сохранить изменения</button>
+    <button @click="$emit('Delete-Poll', CurrentPoll.id, index)">Удалить опрос</button>
   </div>
 </template>
 
@@ -26,150 +43,135 @@
 import axios from "axios";
 
 export default {
-  props: ["CurrentVoting", "User"],
-  name: "Voting",
+  props: ["CurrentPoll", "Id", "index"],
+  name: "PollPrivate",
   data() {
     return {
-      NewOption: "",
-      CurrentDeadLine: null,
-      AllUserAnswers: 0,
-      ChosenOptions: []
+      textOption: ""
     };
   },
-  computed: {
-    TimeLeft() {
-      return this.CurrentDeadLine;
-    }
-  },
-  mounted: function() {
-    if (this.User.TypeVoting != "deadline")
-      setInterval(() => this.GetData(), 1000);
-    else {
-      this.Block();
-    }
+  created: function() {
+    this.CurrentPoll.deadLine = this.CurrentPoll.deadLine.substring(0, 10);
+    this.CurrentPoll.deadLine.replace("-", "/");
   },
   methods: {
-    Vote: function() {
-      let i = 0;
-      let UserVot = 0;
-      if (this.CurrentVoting.userAnswers.length > 0) {
-        for (let OneUsersAnswers of this.CurrentVoting.userAnswers) {
-          for (let UserAnswer in OneUsersAnswers) {
-            if (UserAnswer == "optionID") {
-              for (let options of this.ChosenOptions) {
-                if (OneUsersAnswers[UserAnswer] == options) i++;
-              }
-            }
-            if (UserAnswer == "userID") {
-							UserVot = OneUsersAnswers[UserAnswer];
-              if (
-                OneUsersAnswers[UserAnswer] == this.User.UserID &&
-                this.CurrentVoting.maxVotesByOneUser > 1
-              )
-                i++;
-              else if (UserVot == this.User.UserID) {
-                alert("Вы уже приняли участие в этом голосовании");
-                return "";
-              }
-            }
-          }
-        }
-        if (i == 2) {
-          alert("Вы уже голосовали за это");
-          return "";
-        } else {
-          console.log("Добавляем ответ!");
-          return this.ChosenOptions;
-        }
-      } else {
-        console.log("Добавляем ответ!");
-        return this.ChosenOptions;
-      }
-    },
     AddOption: function() {
-      let CheckOptions = this.CurrentVoting.options.length;
-      if (CheckOptions + 1 > this.CurrentVoting.maxOptions) {
-        alert("Достигнут лимит вариантов");
-        return "";
-      } else {
-        let option = this.NewOption;
-        this.NewOption = "";
-        return option;
+      console.log(this.$route.params.Url.AddOption);
+      if (this.CurrentPoll.optionsPoll == null)
+        this.CurrentPoll.optionsPoll = [];
+      if (this.textOption == "") alert("Вы не ввели текст нового варианта!");
+      else {
+        axios
+          .post(this.$route.params.Url.AddOption, {
+            PollId: this.CurrentPoll.id,
+            TextOption: this.textOption
+          })
+          .then(response => {
+            this.CurrentPoll.optionsPoll.push(response.data);
+          });
+
+        this.textOption = "";
       }
     },
-    GetData: function() {
-      let DataDeadLine = new Date(Date.parse(this.CurrentVoting.deadLine));
-      let Millis = DataDeadLine - Date.now();
+    DeleteOption: function(event) {
+      console.log(event.target.id);
+      console.log(this.CurrentPoll.optionsPoll[event.target.id].id);
 
-      let days = Millis / (1000 * 60 * 60 * 24);
-      let absoluteDays = Math.floor(days);
-      let d = absoluteDays > 9 ? absoluteDays : "0" + absoluteDays;
-
-      let hours = (days - absoluteDays) * 24; //Millis / (1000 * 60 * 60);
-      let absoluteHours = Math.floor(hours);
-      let h = absoluteHours > 9 ? absoluteHours : "0" + absoluteHours;
-
-      //Get remainder from hours and convert to minutes
-      let minutes = (hours - absoluteHours) * 60;
-      let absoluteMinutes = Math.floor(minutes);
-      let m = absoluteMinutes > 9 ? absoluteMinutes : "0" + absoluteMinutes;
-
-      //Get remainder from minutes and convert to seconds
-      let seconds = (minutes - absoluteMinutes) * 60;
-      let absoluteSeconds = Math.floor(seconds);
-      let s = absoluteSeconds > 9 ? absoluteSeconds : "0" + absoluteSeconds;
-
-      this.CurrentDeadLine = d + ":" + h + ":" + m + ":" + s;
-    },
-    Block: function() {
-      let elements = document.getElementById("voting");
-      for (let elem of elements.children) {
-        if (elem.id == "VotOptions")
-          for (let opt of elem.children) {
-            opt.disabled = true;
+      axios
+        .post(
+          this.$route.params.Url.DeleteOption +
+            `${this.CurrentPoll.optionsPoll[event.target.id].id}`,
+          {
+            Id: this.CurrentPoll.optionsPoll[event.target.id].id
           }
-        elem.disabled = true;
+        )
+        .catch(error => console.log(error));
+      this.CurrentPoll.optionsPoll.splice(event.target.id, 1);
+    },
+    CheckMaxVotes: function() {
+      if (
+        this.CurrentPoll.maxVotesByOneClient >
+          this.CurrentPoll.maxOptionsInPoll &&
+        this.CurrentPoll.maxOptionsInPoll != 0
+      ) {
+        this.CurrentPoll.maxVotesByOneClient = null;
+        alert(
+          "Число вариантов клиента должно быть меньше количества всех вариантов!"
+        );
       }
     },
-    CheckAnswers: function(event) {
-      let Option = event.target;
-
-      if (this.CurrentVoting.maxVotesByOneUser == 1) {
-        if (Option.checked === true) this.ChosenOptions.unshift(Option.id);
-        else this.ChosenOptions.pop();
-        if (this.ChosenOptions.length > 1)
-          document.getElementById(this.ChosenOptions.pop()).checked = false;
-      } else {
-        if (Option.checked === false) {
-          this.ChosenOptions.splice(
-            this.ChosenOptions.indexOf(Option.id) - 1,
-            1
-          );
-        } else {
-          this.ChosenOptions.push(Option.id);
-          if (
-            this.ChosenOptions.length > this.CurrentVoting.maxVotesByOneUser
-          ) {
-            Option.checked = true;
-            this.ChosenOptions.pop();
-            document.getElementById(this.ChosenOptions.pop()).checked = false;
-            this.ChosenOptions.push(Option.id);
-          }
-        }
+    CheckMaxOptions: function() {
+      if (this.CurrentPoll.maxOptionsInPoll > 19) {
+        this.CurrentPoll.maxOptionsInPoll = 19;
+        alert("Число вариантов не должно быть больше 19!");
       }
+    },
+    SaveChanges: function() {
+      axios.post(this.$route.params.Url.Update, {
+        QuestionText: this.CurrentPoll.questionText,
+        DeadLine: this.CurrentPoll.deadLine,
+        IsPrivate: this.CurrentPoll.isPrivate,
+        MaxVotesByOneClient: this.CurrentPoll.maxVotesByOneClient,
+        MaxOptionsInPoll: this.CurrentPoll.maxOptionsInPoll,
+        IsPossibleToAddOption: this.CurrentPoll.isPossibleToAddOption,
+        Id: this.CurrentPoll.id
+      });
+      return this.CurrentPoll.isPrivate;
     }
   }
 };
 </script>
 
 <style scoped>
+#poll {
+  display: flex;
+  flex-direction: column;
+  font: 16px "Oswald", sans-serif;
+}
+
+.options {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.myclass1 {
+  display: flex;
+  flex-direction: column;
+  margin: 5px 5px 5px 5px;
+  border: 4px double black; /* Параметры границы */
+  background: #fc3; /* Цвет фона */
+  padding: 10px;
+  justify-content: center;
+  width: 250px;
+}
+
+.option {
+  width: 100%;
+}
+
 button {
+  font: 16px "Oswald", sans-serif;
   background: aqua;
   border: 1px solid black;
   border-radius: 5px;
+  margin-top: 10px;
 }
 
-#STOP {
-  background: red;
+strong {
+  text-align: center;
+}
+
+#question {
+  margin-bottom: 10px;
+}
+
+#othersettings {
+  margin-bottom: 10px;
+  margin-top: 10px;
+}
+
+input[type="text"] {
+  margin-top: 5px;
 }
 </style>
