@@ -165,27 +165,6 @@ namespace ServerCore.Services
             }
         }
 
-        public int GetIdOption(int PollId, string TextOption)
-        {
-            using (IDbConnection db = new SqlConnection(connectionString))
-            {
-                return db.Query<int>("SELECT Id FROM OptionPoll WHERE PollId = @PollId AND TextOption = @TextOption", new { PollId, TextOption }).FirstOrDefault();
-            }
-        }
-
-        public void AddOptions(OptionPoll[] options)
-        {
-            using (IDbConnection db = new SqlConnection(connectionString))
-            {
-                for (int i = 0; i < options.Length; i++)
-                {
-                    var sqlQuery = "INSERT INTO OptionPoll (PollId, TextOption) VALUES(" +
-                    "@PollId, @TextOption)";
-                    db.Execute(sqlQuery, new { options[i].PollId, options[i].TextOption });
-                }
-            }
-        }
-
         public OptionPoll AddOption(OptionPoll option)
         {
             using (IDbConnection db = new SqlConnection(connectionString))

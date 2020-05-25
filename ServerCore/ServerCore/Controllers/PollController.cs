@@ -51,13 +51,6 @@ namespace ServerCore.Controllers
             return pollService.GetListPoll(4, ClientId);
         }
 
-        //GET<controller>/getidoption
-        [HttpPost("getidoption")]
-        public int GetIdOption(int PollId, string TextOption)
-        {
-            return pollService.GetIdOption(PollId, TextOption);
-        }
-
         // POST <controller>
         [HttpPost]
         public Poll Post(Poll poll)
@@ -94,14 +87,6 @@ namespace ServerCore.Controllers
         public void Update(Poll poll)
         {
             pollService.Update(poll);
-            Ok();
-        }
-
-        // POST <controller>/addOptions
-        [HttpPost("addoptions")]
-        public void AppOptions(OptionPoll[] options)
-        {
-            pollService.AddOptions(options);
             Ok();
         }
 
